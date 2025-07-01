@@ -1,0 +1,100 @@
+{# {% extends 'base.html.twig' %}
+
+{% block title %}Choix du module{% endblock %}
+
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}
+
+
+{% block body %}
+
+  <div class="container">
+      <h1>CHOIX DU MODULE</h1>
+  </div>
+
+{% endblock %} #}
+
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des modules{% endblock %}
+
+{% block stylesheets %}
+            {{ parent() }}
+            {{ encore_entry_link_tags('listModulesStyle') }}
+        {% endblock %}
+
+{% block javascripts %}
+            {{ parent() }}
+            {# {{ encore_entry_script_tags('doctor') }} #}
+
+{% endblock %}
+
+{% block body %}
+
+<header class="header" id="header">
+      <div class="header_toggle ">
+      {# <i class="fa-solid fa-bars toggle_margin " id="header-toggle"></i> #}
+      </div>
+      <div class="profile mt-3">
+          <ul class="d-flex align-items-center">
+            <!-- Icon dropdown -->
+            <li class=" mr-3">
+              <a href="/app" class="d-flex align-items-center navBarIcons">
+                {# <i class="fas fa-folder"></i><span class="ml-2 small moduleHeader"> {{app.session.get('dossier').title}}</span> #}
+                <i class="fas fa-folder"></i><span class="ml-2 small moduleHeader"> {{app.session.get('dossier').prefix}}</span>
+
+              </a>
+            </li>
+            <li class=" mr-3">
+              <a href="/dossier/module/{{app.session.get('dossier').id}}" class="navBarIcons">
+                <i class="fas fa-gear"></i> 
+              </a>
+            </li>
+            <li class="nav-item me-3 me-lg-0 dropdown">
+            
+              <button class="nav-link dropdown-toggle" id="navbarDropdown">
+              
+                <i class="fas fa-user"></i> {{app.user.username}}
+              </button>
+              <div class="dropdown-menu" id="divMenu">
+                  <a class="dropdown-item" href="{{path('app__profile')}}"><i class="fa-solid fa-pen-to-square"></i><span>Profile</span></a>
+                  {# <a class="" href="#"><i class="fa-solid fa-gear"></i> Paramétres</a> #}
+                  <a class="dropdown-item" href="{{path('app_logout')}}"><i class="fa-solid fa-right-from-bracket"></i><span>Decconexion</span></a>
+
+              </div>
+            </li>
+        </ul>
+      </div>
+      
+    </header>
+
+<div class="main">
+    <div class="container">
+        <h1 class="pt-4">CHOIX DU MODULE :</h1>
+        <div class="row">
+            {% for module in app.session.get('modules')  %}
+              {# {% if module.setting %} #}
+                <div class="col-md-3 ">
+                {% set firstSubModule = module.pSousModule|first %}
+                <a href="{{path(firstSubModule.route)}}">
+                    <div class="card" >
+                        <i class="moduleIcon {{module.icon}}"></i>
+                        <div class="card-body">
+                            <h4 class="card-title">{{module.nom}}</h4>
+                        </div>
+                    </div>
+                </a>
+                </div>
+              {# {% endif %} #}
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

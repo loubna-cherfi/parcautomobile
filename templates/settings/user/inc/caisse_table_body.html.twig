@@ -1,0 +1,10 @@
+{% for caisse in caisses %}
+    <tr class="row_caisse" data-id="{{ caisse.id }}" {% if caisse.isAssignedToUser %}class="colorRow"{% endif %}>
+        <td>
+            <input type="checkbox" value="{{ caisse.id }}" 
+            {% if caisse.isAssignedToUser %}checked{% endif %}>
+        </td>
+        <td>{{ caisse.id }}</td>
+        <td>{{ caisse.nom }}</td>
+    </tr>
+{% endfor %}

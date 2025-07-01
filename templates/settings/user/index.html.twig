@@ -1,0 +1,409 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des utilisateurs{% endblock %}
+
+
+{% block javascripts %}
+            {{ parent() }}
+            {{ encore_entry_script_tags('setting_user') }}
+            {{ encore_entry_script_tags('setting_user_affectation') }}
+
+
+        {% endblock %}
+
+
+{% block body %} 
+
+
+<div class="main">
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-12 mt-3 ">
+            {# {% for message in app.flashes('error') %}
+                <div class="alert alert-danger text-uppercase">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success text-uppercase">
+                    {{ message }}
+                </div>
+            {% endfor %} #}
+            <div class="row no-gutters mb-2">
+                <div class="col-md-6 d-flex justify-content-start align-items-center"> 
+                    <div class="w-100">
+                        <h5>LISTE DES UTILISATEURS :</h5>
+                    </div>
+                </div>
+
+                <div class="col-md-6 d-flex justify-content-end align-items-center ml-auto">
+
+                    {% set current_route = app.request.get('_route') %}
+
+                    {% for action in actions %}
+                        {% if action.horizontal and action.principal %}
+                            <button type="button" class="{{action.className}}" data-toggle="modal" data-target="#{{action.idName}}"><i class="{{action.icon}}"></i></button>
+                        {% endif %}
+
+                    {% endfor %}
+
+                    <div class="dropdown ml-2">
+                        <i class="menuActions menu_options_dots fa-solid fa-ellipsis-vertical" id="Actions"></i>
+                        <div class="dropdown-menu dropdown-content divMenu" id="divMenuActions">
+                            {% for action in actions %}
+                                {% if action.horizontal and not action.principal %}
+                                    <button class="dropdown-item {{action.className}}" data-toggle="modal" data-target="#{{action.idName}}"><i class="{{action.icon}}"></i> {{action.nom}}</button>
+                                {% endif %}
+
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <table id="myTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>NOM D'UTILISATEUR</th>
+                        <th>NOM</th>
+                        <th>DATE MODIFICATION</th>
+                        <th>PROFESSION</th>
+                        <th>ACTIVE</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="listUsers">
+
+                {% for index, user in users %}
+                    <tr id="{{ user.id }}">
+                        <td>{{index + 1}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.name}}</td>
+
+                        <td>{{ user.dateUpdate | date('Y-m-d H:m:s') }}</td>
+                        <td>{{user.PProfession.description}}</td>
+                        <td class="tdStatus">
+                            {% if user.isActive %}
+                            <i class="fa-regular fa-circle-check actifIcon"></i><span class="actifIcon"></span>
+                            {% else %}
+                            <i class="fa-regular fa-circle-xmark inactifIcon"></i><span class="inactifIcon"></span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                           <i class="menuActions fa-solid fa-ellipsis-vertical" id="{{user.id}}">
+                            </i>
+                            <div class="dropdown-menu dropdown-content divMenu" id="divMenu{{user.id}}">
+                            {# {{dump(app.session.get('actions'))}} #}
+                                {% for action in actions %}
+                                    {% if not action.horizontal %}
+                                        {% if action.nom == "ACTIVER" %}
+                                            {% if user.isActive %}
+                                                <button class="{{action.className}} dropdown-item" data-id="{{user.id}}"><i class="{{action.icon}} menuIcon"></i> DESACTIVER</button>
+                                            {% else %}
+                                                <button class="{{action.className}} dropdown-item" data-id="{{user.id}}"><i class="{{action.icon}} menuIcon"></i> ACTIVER</button>
+                                            {% endif %}
+                                        {% elseif action.nom == "MODIFIER" %}
+                                                <button type="button" class="{{action.className}} dropdown-item" data-toggle="modal"  id="btnUpdateUser{{user.id}}"><i class="{{action.icon}} menuIcon"></i> {{action.nom}}</button>
+                                        {% elseif action.nom == "SUPPRIMER" %}
+                                                <button type="button" class="{{action.className}} dropdown-item" data-id="{{user.id}}"  id="btndeleteUser{{user.id}}"><i class="{{action.icon}} menuIcon"></i> {{action.nom}}</button>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            </div>
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+
+
+            <!-- Modal Add User -->
+
+            <div class="modal right fade" id="addUser"  role="dialog" aria-labelledby="addUser" aria-hidden="true">
+            <div class="modal-dialog" style="width:40%" role="document">
+
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >AJOUTER UTILISATEUR</h5>
+                    <button type="button" class="close" data-dismiss="modal" id="closeAddUser" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between">
+                        <input type="text" class="form-control m-2" name="username" id="username" placeholder="NOM D'UTILISATEUR" required/>
+                        <input type="text" class="form-control m-2" name="nom" id="nom" placeholder="FULL NAME" required/>
+                    </div>
+                    <div class="d-flex justify-content-between">
+
+                        <input type="password" class="form-control m-2" name="password" id ="password"placeholder="MOT DE PASSE" required/>
+                    </div>
+
+                    <div class="d-flex m-2">
+                        <div class="form-check mr-3">
+                            <input class="form-check-input" type="radio" name="status" id="actif" value="actif" checked>
+                            <label class="form-check-label" for="actif">
+                                ACTIF
+                            </label>
+                        </div>
+                        <div class="form-check ">
+                            <input class="form-check-input" type="radio" name="status" id="desactif" value="desactif">
+                            <label class="form-check-label" for="status">
+                                DESACTIF
+                            </label>
+                        </div> 
+                    </div>
+                    <div class="d-flex justify-content-between m-2">
+                        <select class="form-control shadow-none" aria-label="Default select example" id="profession" name="profession" required>
+                            <option value="" selected >PROFESSION</option>
+                            {% for profession in professions %}
+                            <option value="{{profession.id}}">{{profession.description}}</option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer m-2">
+                        <button type="submit" class="btn-sm btn btn-primary saveAddUser ladda-button" data-spinner-size="18" data-style="expand-right">
+                            <span class="ladda-label">
+                            <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                            </span>
+                        </button>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Modal Update User -->
+
+            <div>
+                <div class="modal right fade" id="updateUser"  role="dialog" aria-labelledby="updateUser" aria-hidden="true">
+                <div class="modal-dialog" style="width:40%" role="document">
+
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" >MODIFIER UTILISATEUR</h5>
+                        <button type="button" class="close" id="closeUpdateUser" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="number" class="form-control m-2" name="id" id="idUser" hidden/>
+
+                        <div class="d-flex justify-content-between">
+                            <input type="text" class="form-control m-2" name="username" id="usernameUpd" placeholder="NOM D'UTILISATEUR"  required/>
+                            <input type="text" class="form-control m-2" name="nom" id="nomUpd" placeholder="NOM"  required/>
+                        </div>
+                        <div class="d-flex justify-content-between">
+
+                            <input type="password" class="form-control m-2" name="password" id="passwordUpd" placeholder="MOT DE PASSE" required/>
+                        </div>
+                        <div class="d-flex justify-content-between">
+
+                            <input type="text" class="form-control m-2" name="route" id ="routeUpd"placeholder="ROUTE PAR DEFAUT" />
+                        </div>
+                        <div class="d-flex m-2">
+                            <div class="form-check mr-3">
+                                <input class="form-check-input status" type="radio" name="statusUpd" id="active" value="actif" />
+                                <label class="form-check-label" for="actif">
+                                    ACTIF
+                                </label>
+                            </div>
+                            <div class="form-check ">
+                                <input class="form-check-input status" type="radio" name="statusUpd" id="desactive" value="desactif" >
+                                <label class="form-check-label" for="status">
+                                    DESACTIF
+                                </label>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between  m-2">
+                            <select class="form-control shadow-none m-2" aria-label="Default select example" id="professionUpd" required>
+                                <option value="" selected >PROFESSION</option>
+                                {% for profession in professions %}
+                                <option value="{{profession.id}}">{{profession.description}}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer m-2">
+                        <button type="submit" id="updateBtn" class="btn-sm btn btn-primary saveUpdateUser ladda-button" data-spinner-size="18" data-style="expand-right">
+                        <span class="ladda-label">
+                        <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                        </span>
+                        </button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+            <div>
+
+            <!-- Modal affect User -->
+
+            <div class="modal right fade" id="affectUser"  role="dialog" aria-labelledby="showActions" aria-hidden="true">
+            <div class="modal-dialog" style="width:50%" role="document">
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" >LISTE DES ACTIONS</h5>
+                        <button type="button" class="close" data-dismiss="modal" id="closeAddAction" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="userActions">
+                        <div class="pl-2 divSelectDossier">
+                            <select class="form-control shadow-none select2" aria-label="Default select example" id="dossier" name="dossier" required>
+                                <option  value="">CHOIX DE DOSSIER</option>
+                                {% for dossier in dossiers %}
+                                <option value="{{dossier.id}}"> {{dossier.title}}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                        <div id="actionsAffectedToUser" class="mt-2">
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer m-2">
+                            <button type="submit" class="btn-sm btn btn-primary saveAffectButton ladda-button" data-spinner-size="18" data-style="expand-right">
+                                <span class="ladda-label">
+                                <i class="fa-regular fa-floppy-disk"></i> Affecter
+                                </span>
+                            </button>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Modal assign org to User -->
+
+            <div class="modal right fade" id="assign_convention"  role="dialog" aria-labelledby="showConvention" aria-hidden="true">
+            <div class="modal-dialog" style="width:30%" role="document">
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" >Assigner des Conventions à l'Utilisateur</h5>
+                        <button type="button" class="close" data-dismiss="modal" id="closeAddConvention" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="userConvention">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="">Données du UTILISATEUR :</h5>
+                            </div>
+                            <div class="col-md-6 text-right">
+
+                            </div>
+                        </div>
+                            <div class="d-flex justify-content-between mb-3">
+                            <div class="w-100 mr-2">
+                                <label for="user_name">Username :</label>
+                                <input class="form-control" type="text" name="username" id="user_name" disabled>
+
+                            </div>
+                            <div class="w-100 mr-2">
+                                <label for="nom">Nom :</label>
+                                <input class="form-control" type="text" name="nom" id="user_nom" disabled>
+                            </div>
+                            <div class="w-100 ">
+                                <label for="user_profession">Profession :</label>
+                                <input class="form-control" type="text" name="profession" id="user_profession" disabled>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="">LISTE DES CONVENTION :</h5>
+                            </div>
+                            <div class="col-md-6 text-right">
+
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                        <table id="convention_table" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                    <input type="checkbox" name="select_all" id="check-all">
+                                    </th>
+                                    <th>#</th>
+                                    <th>NOM CONVENTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list_convention">
+
+                            </tbody>
+                        </table>
+                        </div>
+
+
+
+                    </div>
+                    <div class="modal-footer m-2">
+                            <button type="submit" class="btn btn-primary saveAssignConvention ladda-button" data-spinner-size="18" data-style="expand-right">
+                                <span class="ladda-label">
+                                <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                                </span>
+                            </button>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Modal duplicate User -->
+
+            <div class="modal right fade" id="duplicate_user"  role="dialog" aria-labelledby="duplicate_user" aria-hidden="true">
+            <div class="modal-dialog" style="width:30%" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Dupliquer l'utilisateur</h5>
+                        <button type="button" class="close" data-dismiss="modal" id="closeDuplicate_user" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="duplicateUserForm">
+                        <div class="modal-body">
+                            <div class="d-flex justify-content-between">
+                                <input type="text" class="form-control m-2" name="username" id="duplicated_username" placeholder="NOM D'UTILISATEUR" required />
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <input type="text" class="form-control m-2" name="nom" id="duplicated_nom" placeholder="FULL NAME" required />
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <input type="password" class="form-control m-2" name="password" id="duplicated_password" placeholder="MOT DE PASSE" required />
+                            </div>
+                        </div>
+                        <div class="modal-footer m-2">
+                            <button type="submit" class="btn-sm btn btn-primary save_duplicate_user ladda-button" data-spinner-size="18" data-style="expand-right">
+                                <span class="ladda-label">
+                                    <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
+
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

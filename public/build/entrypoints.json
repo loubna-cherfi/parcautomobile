@@ -1,0 +1,121 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/738.8dac8cdc.js",
+        "/build/193.0218dc93.js",
+        "/build/622.d1e69617.js",
+        "/build/app.3a524737.js"
+      ],
+      "css": [
+        "/build/622.4d445ace.css",
+        "/build/app.2b58a0b8.css"
+      ]
+    },
+    "setting_user": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/738.8dac8cdc.js",
+        "/build/setting_user.daab8100.js"
+      ]
+    },
+    "setting_module": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/738.8dac8cdc.js",
+        "/build/193.0218dc93.js",
+        "/build/902.48947e83.js",
+        "/build/setting_module.7c62019d.js"
+      ]
+    },
+    "setting_sub_module": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/738.8dac8cdc.js",
+        "/build/193.0218dc93.js",
+        "/build/902.48947e83.js",
+        "/build/setting_sub_module.f91630ab.js"
+      ]
+    },
+    "setting_action": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/setting_action.b31d9758.js"
+      ]
+    },
+    "setting_user_affectation": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/738.8dac8cdc.js",
+        "/build/193.0218dc93.js",
+        "/build/setting_user_affectation.48febd35.js"
+      ]
+    },
+    "setting_profile": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/setting_profile.1657ab8b.js"
+      ]
+    },
+    "setting_site": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/738.8dac8cdc.js",
+        "/build/setting_site.264dfeec.js"
+      ]
+    },
+    "settings_vehicule": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/738.8dac8cdc.js",
+        "/build/settings_vehicule.485d6f46.js"
+      ]
+    },
+    "settings_conducteur": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/settings_conducteur.e05cce1e.js"
+      ]
+    },
+    "settings_demande": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/738.8dac8cdc.js",
+        "/build/settings_demande.ce404717.js"
+      ]
+    },
+    "login": {
+      "js": [
+        "/build/runtime.6c30001d.js"
+      ],
+      "css": [
+        "/build/login.4b898aa4.css"
+      ]
+    },
+    "siteStyle": {
+      "js": [
+        "/build/runtime.6c30001d.js"
+      ],
+      "css": [
+        "/build/siteStyle.62232ae7.css"
+      ]
+    },
+    "listModulesStyle": {
+      "js": [
+        "/build/runtime.6c30001d.js"
+      ],
+      "css": [
+        "/build/listModulesStyle.9dfda2b8.css"
+      ]
+    },
+    "choix_site": {
+      "js": [
+        "/build/runtime.6c30001d.js"
+      ],
+      "css": [
+        "/build/choix_site.34485e1a.css"
+      ]
+    }
+  }
+}

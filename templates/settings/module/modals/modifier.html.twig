@@ -1,0 +1,33 @@
+<div class="modal right fade" id="updateModule"  role="dialog" aria-labelledby="updateModule" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" >MODIFIER MODULE</h5>
+            <button type="button" class="close" data-dismiss="modal" id="closeUpdateModule" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="d-flex justify-content-between">
+                <input type="text" hidden class="form-control m-2" name="idModule" id="idModule" />
+
+                <input type="text" class="form-control m-2" name="route" id="routeUpdate" placeholder="ROUTE" />
+                <input type="text" class="form-control m-2" name="icon" id="iconUpdate" placeholder="ICON" />
+            </div>
+            <div class="d-flex justify-content-between">
+
+                <input type="text" class="form-control m-2" name="nomModule" id ="nomModuleUpdate"placeholder="NOM" required/>
+            </div>
+
+        </div>
+        <div class="modal-footer m-2">
+                <button type="submit" class="btn-sm btn btn-primary saveUpdateModule ladda-button" data-spinner-size="18" data-style="expand-right">
+                    <span class="ladda-label">
+                    <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                    </span>
+                </button>
+        </div>
+        </div>
+    </div>
+</div>

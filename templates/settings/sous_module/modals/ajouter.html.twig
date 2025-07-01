@@ -1,0 +1,36 @@
+<div class="modal right right fade" id="addSubModule"  role="dialog" aria-labelledby="addSubModule" aria-hidden="true">
+    <div class="modal-dialog w-20" role="document">
+
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" >AJOUTER SOUS MODULE</h5>
+            <button type="button" class="close" data-dismiss="modal" id="closeAddSubModule" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="d-flex justify-content-between">
+                <input type="text" class="form-control m-2" name="subModuleName" id="subModuleName" placeholder="NOM" />
+                <input type="text" class="form-control m-2" name="routeName" id="routeName" placeholder="ROUTE" />
+            </div>
+            <div class="d-flex justify-content-between mr-2 ml-2">
+                <select class="form-control shadow-none m-2" aria-label="Default select example" id="module" name="module" required>
+                    <option value="" selected >MODULE</option>
+                    {% for module in allModules %}
+                    <option value="{{module.id}}">{{module.nom}}</option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+        </div>
+        <div class="modal-footer m-2">
+                <button type="submit" class="btn-sm btn btn-primary saveAddSubModule ladda-button" data-spinner-size="18" data-style="expand-right">
+                    <span class="ladda-label">
+                    <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                    </span>
+                </button>
+        </div>
+        </div>
+    </div>
+</div>

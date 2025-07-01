@@ -1,0 +1,10 @@
+{% for convention in conventions %}
+    <tr class="row_convention {% if convention.isAssignedToUser %}colorRow{% endif %}" data-id="{{ convention.id }}" >
+        <td>
+            <input type="checkbox" value="{{ convention.id }}" 
+            {% if convention.isAssignedToUser %}checked{% endif %}>
+        </td>
+        <td>{{ convention.id }}</td>
+        <td>{{ convention.nom }}</td>
+    </tr>
+{% endfor %}

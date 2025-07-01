@@ -1,0 +1,185 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modules{% endblock %}
+
+{% block javascripts %}
+            {{ parent() }}
+            {{ encore_entry_script_tags('setting_module') }}
+
+        {% endblock %}
+
+
+{% block body %}
+
+
+<div class="conatiner">
+<div class="row">
+
+        <div class="col-md-12 mt-3 ">
+
+
+
+            <div class="row no-gutters mb-2">
+                <div class="col-md-6 d-flex justify-content-start align-items-center">
+                    <div class="w-100">
+                    <h5>GESTION DES MODULES :</h5>
+                    </div>
+                </div>
+
+                <div class="col-md-6 d-flex justify-content-end align-items-center ml-auto">
+
+                    {% set current_route = app.request.get('_route') %}
+
+                    {% for action in actions %}
+                        {% if action.horizontal and action.principal %}
+                            <button type="button" class="{{action.className}}" data-toggle="modal" data-target="#{{action.idName}}"><i class="{{action.icon}}"></i></button>
+                        {% endif %}
+
+                    {% endfor %}
+
+                    <div class="dropdown ml-2">
+                        <i class="menuActions menu_options_dots fa-solid fa-ellipsis-vertical" id="Actions"></i>
+                        <div class="dropdown-menu dropdown-content divMenu" id="divMenuActions">
+                            {% for action in actions %}
+                                {% if action.horizontal and not action.principal %}
+                                    <button class="dropdown-item {{action.className}}" data-toggle="modal" data-target="#{{action.idName}}"><i class="{{action.icon}}"></i> {{action.nom}}</button>
+                                {% endif %}
+
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <table id="modulesTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>NOM</th>
+                        <th>ICON</th>
+                        <th>ROUTE</th>
+                        <th>ORD</th>
+                        <th>ACTIVE</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="listModules">
+                    {% for index , m in allModules %}
+                    <tr>
+                        <td>{{m.id}}</td>
+                        <td>{{m.nom}}</td>
+                        <td>{{m.icon}}</td>
+                        <td>{{m.route}}</td>
+                        <td>{{m.ord}}</td>
+                        <td>
+                            {% if m.active %}
+                            <i class="fa-regular fa-circle-check actifIcon"></i><span class="actifIcon"></span>
+                            {% else %}
+                            <i class="fa-regular fa-circle-xmark inactifIcon"></i><span class="inactifIcon"></span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                            <i class="menuActions fa-solid fa-ellipsis-vertical" id="{{m.id}}">
+                            </i>
+                            <div class="dropdown-menu dropdown-content divMenu" id="divMenu{{m.id}}">
+                                {% for action in actions %}
+                                    {% if not action.horizontal and action.route == current_path %}
+                                        {% if action.nom == "ACTIVER" %}
+                                            {% if m.active %}
+                                                <button class="{{action.className}} dropdown-item d-flex align-items-end " data-id="{{m.id}}"><i class="{{action.icon}} menuIcon"></i> DESACTIVER</button>
+                                            {% else %}
+                                                <button class="{{action.className}} dropdown-item d-flex align-items-end" data-id="{{m.id}}"><i class="{{action.icon}} menuIcon"></i> ACTIVER</button>
+                                            {% endif %}
+                                        {% elseif action.nom == "MODIFIER" %}
+                                                <button  class="{{action.className}} dropdown-item btnUpdateModule" data-toggle="modal"   id="btnUpdateUser{{m.id}}"><i class="{{action.icon}} menuIcon"></i> {{action.nom}}</button>
+                                        {% elseif action.nom == "SUPPRIMER" %}
+                                                <button class="{{action.className}} dropdown-item" data-id="{{m.id}}"  id="btndeleteUser{{m.id}}"><i class="{{action.icon}} menuIcon"></i> {{action.nom}}</button>
+                                        {% endif %}
+                                    {% endif %}
+
+                                {% endfor %}
+                            </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- Modal Add Module -->
+
+            <div class="modal right fade" id="addModule"  role="dialog" aria-labelledby="addModule" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >AJOUTER MODULE</h5>
+                    <button type="button" class="close" data-dismiss="modal" id="closeAddModule" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between">
+                        <input type="text" class="form-control m-2" name="route" id="route" placeholder="ROUTE" />
+                        <input type="text" class="form-control m-2" name="icon" id="icon" placeholder="ICON" />
+                    </div>
+                    <div class="d-flex justify-content-between">
+
+                        <input type="text" class="form-control m-2" name="nomModule" id ="nomModule"placeholder="NOM" required/>
+                    </div>
+
+                </div>
+                <div class="modal-footer m-2">
+                        <button type="submit" class="btn-sm btn btn-primary saveAddModule ladda-button" data-spinner-size="18" data-style="expand-right">
+                            <span class="ladda-label">
+                            <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                            </span>
+                        </button>
+                </div>
+                </div>
+            </div>
+            </div>
+
+
+            <!-- Modal Update Module -->
+
+            <div class="modal right fade" id="updateModule"  role="dialog" aria-labelledby="updateModule" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >MODIFIER MODULE</h5>
+                    <button type="button" class="close" data-dismiss="modal" id="closeUpdateModule" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between">
+                        <input type="text" hidden class="form-control m-2" name="idModule" id="idModule" />
+
+                        <input type="text" class="form-control m-2" name="route" id="routeUpdate" placeholder="ROUTE" />
+                        <input type="text" class="form-control m-2" name="icon" id="iconUpdate" placeholder="ICON" />
+                    </div>
+                    <div class="d-flex justify-content-between">
+
+                        <input type="text" class="form-control m-2" name="nomModule" id ="nomModuleUpdate"placeholder="NOM" required/>
+                    </div>
+
+                </div>
+                <div class="modal-footer m-2">
+                        <button type="submit" class="btn-sm btn btn-primary saveUpdateModule ladda-button" data-spinner-size="18" data-style="expand-right">
+                            <span class="ladda-label">
+                            <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                            </span>
+                        </button>
+                </div>
+                </div>
+            </div>
+            </div>
+</div>
+</div>
+{% endblock %}

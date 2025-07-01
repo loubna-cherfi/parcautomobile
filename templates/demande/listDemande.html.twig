@@ -1,0 +1,390 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des demandes{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('settings_demande') }}
+{% endblock %}
+
+{% block body %}
+<div class="main">
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 mt-3">
+            <div class="row no-gutters mb-2">
+                <div class="col-md-6 d-flex justify-content-start align-items-center">
+                    <div class="w-100">
+                        <h5>LISTE DES DEMANDES :</h5>
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex justify-content-end align-items-center ml-auto">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDemande">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <table id="demandeTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Dossier</th>
+                        <th>Date demande</th>
+                        <th>Benificiere</th>
+                        <th>Contact</th>
+                        <th>CIN</th>
+                        <th>Nomber des personnes</th>
+                        <th>Tarif total</th>
+                         <th>Description</th>
+                        <th>observation</th>
+                        {# <th>Date traitement</th>
+                        <th>Date validation</th> #}
+                        {# <th>Statut</th> #}
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="listDemandes">
+                    {% for index, demande in demandes %}
+                        <tr id="{{ demande.id }}">
+                                <td>{{ index + 1 }}</td>
+                                <td>
+    {% set nomComplet = demande.dossierId ? demande.dossierId.nomDossier ?? 'N/A' : 'N/A' %}
+    {% if nomComplet|length > 4 %}
+        <span data-toggle="tooltip" title="{{ nomComplet }}">
+            {{ nomComplet[:4] }}...
+        </span>
+    {% else %}
+        {{ nomComplet }}
+    {% endif %}
+</td>
+
+                                <td>{{ demande.dateDemande ? demande.dateDemande|date('d/m/Y') : '' }}</td>
+                                <td>{{ demande.nomBenificiaire }}</td>
+                                <td>{{ demande.contact }}</td>
+                                <td>{{ demande.cin }}</td>
+                                <td>{{ demande.nbPersonnes }}</td>
+                                <td>{{ demande.tarifTotal }}</td>
+                                <td>{{ demande.description }}</td>
+                                <td>{{ demande.observation }}</td>
+                                {# <td>{{ demande.dateValidation ? demande.dateValidation|date('d/m/Y') : '' }}</td>  #}
+                                {# <td>{{ demande.statutId ? demande.statutId.libelle ?? 'N/A' : 'N/A' }}</td> #}
+                                <td>
+                                {% if demande.active %}
+                                <i class="fa-regular fa-circle-check actifIcon"></i>
+                                {% else %}
+                                <i class="fa-regular fa-circle-xmark inactifIcon"></i>
+                                {% endif %}
+                                </td>         
+                            <td>
+  <div class="dropdown">
+    <button class="btn " type="button" id="dropdownMenuButton{{ demande.id }}" data-toggle="dropdown">
+    {# <button class="dropdown-item btnUpdateConducteur" data-id="{{ conducteur.id }}" data-toggle="modal" data-target="#updateConducteur"> #}
+
+      <i class="fa-solid fa-ellipsis-vertical"></i>
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ demande.id }}">
+     <button class="dropdown-item btnDetails" data-id="{{ demande.id }}"  data-bs-toggle="offcanvas" data-bs-target="#detailDemandeOffcanvas">
+        <i class="fa fa-eye"></i> Détail
+      </button>
+    <button class="dropdown-item btnTraiterDemande" data-id="{{ demande.id }}" data-toggle="modal" data-target="#traiterDemande">
+  <i class="fa-solid fa-pen-to-square"></i> Traiter
+</button>
+
+ 
+     
+    </div>
+  </div>
+</td>
+
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+<!-- MODAL DÉTAILS DE LA DEMANDE -->
+<div class="modal right fade" id="detailDemandeModal" role="dialog" aria-labelledby="detailDemandeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 40%;" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-primary" id="detailDemandeModalLabel">DÉTAILS DE LA DEMANDE</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered table-striped table-hover mb-0">
+            <thead class="thead-dark">
+              <tr>
+                <th>#</th>
+                <th>Prestation</th>
+                <th>Véhicule</th>
+                <th>Conducteur</th>
+                <th>Zone</th>
+                <th>Lieu</th>
+                <th>Ville</th>
+                <th>Heure</th>
+                <th>Tarif unique</th>
+              </tr>
+            </thead>
+            <tbody id="detailsTableBody">
+              <!-- Rempli via JavaScript à partir des blocs HTML -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer m-2">
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BLOCS DÉTAILS HTML CACHÉS PAR DEMANDE -->
+{% for demande in demandes %}
+  <script type="text/html" id="template-detail-{{ demande.id }}">
+
+    {% for detail in demande.tDemandeDets %}
+      <tr>
+        <td>{{ detail.id }}</td>
+        <td>{{ detail.prestationId.nomPrestation ?? '' }}</td>
+        <td>{{ detail.vehiculeId.matricule ?? '' }}</td>
+        <td>{{ detail.conducteurId.nom ?? '' }}</td>
+        <td>{{ detail.zoneId.libelle ?? '' }}</td>
+        <td>{{ detail.lieu }}</td>
+        <td>{{ detail.ville }}</td>
+        <td>{{ detail.heure ? detail.heure|date('H:i') : '' }}</td>
+        <td>{{ detail.tarif }}</td>
+       
+      
+      </tr>
+    {% else %}
+      <tr><td colspan="8" class="text-center text-danger">Aucun détail</td></tr>
+    {% endfor %}
+  </script>
+{% endfor %}
+
+<!-- MODAL AJOUTER UNE DEMANDE -->
+<div class="modal right fade" id="addDemande" tabindex="-1" role="dialog" aria-labelledby="addDemandeLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 40%;" role="document">
+    <div class="modal-content d-flex flex-column h-100">
+      <form id="formAddDemande" method="POST" action="">
+        <div class="modal-header">
+          <h5 class="modal-title text-primary">AJOUTER UNE NOUVELLE DEMANDE</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeAddDemande">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+
+          <!-- Section 1 : Informations générales -->
+          <h5 class="text-secondary">Informations générales</h5>
+
+          <div class="form-row mb-3">
+            <div class="col-md-6">
+              <input type="text" name="nomBenificiaire" class="form-control" placeholder="Nom du bénéficiaire" required>
+            </div>
+            <div class="col-md-6">
+              <input type="text" name="cin" class="form-control" placeholder="CIN">
+            </div>
+          </div>
+
+          <div class="form-row mb-3">
+            <div class="col-md-6">
+              <input type="text" name="contact" class="form-control" placeholder="Contact">
+            </div>
+            <div class="col-md-6">
+              <input type="date" name="dateDemande" class="form-control" placeholder="Date de la demande" required>
+            </div>
+          </div>
+
+          <div class="form-row mb-3">
+            <div class="col-md-6">
+              <input type="number" name="nbPersonnes" class="form-control" placeholder="Nombre de personnes">
+            </div>
+            <div class="col-md-6">
+              <input type="text" name="lieu" class="form-control" placeholder="Lieu">
+            </div>
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-md-6">
+              <input type="text" name="observation" class="form-control" placeholder="Observation">
+            </div>
+            <div class="col-md-6">
+              <input type="text" name="description" class="form-control" placeholder="Description">
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Section 2 : Détails de la demande -->
+          <h5 class="text-secondary">Détails de la demande</h5>
+
+          <div id="detailsDemandeContainer" class="container-fluid px-0">
+           
+
+            <div class="form-row mb-3">
+              <div class="col-md-6">
+                <select name="details[0][vehicule]" class="form-control">
+                  <option value="">Véhicule</option>
+                  {% for vehicule in vehicules %}
+                    <option value="{{ vehicule.id }}">{{ vehicule.matricule }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <select name="details[0][conducteur]" class="form-control">
+                  <option value="">Conducteur</option>
+                  {% for conducteur in conducteurs %}
+                    <option value="{{ conducteur.id }}">{{ conducteur.nom }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="text-right mb-3">
+              <button type="button" class="btn btn-outline-primary btn-sm" id="add-detail">
+                <i class="fa fa-plus"></i> Ajouter un détail
+              </button>
+            </div>
+          </div>
+   
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer mt-auto d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+          </button>   
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL traiter UNE DEMANDE -->
+<div class="modal right fade" id="traiterDemande" tabindex="-1" role="dialog" aria-labelledby="traiterDemandeLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 40%;" role="document">
+    <div class="modal-content d-flex flex-column h-100">
+      <form id="formTraiterDemande" method="POST" action="">
+        <input type="hidden" name="id" id="traiter-idDemande">
+
+        <div class="modal-header">
+          <h5 class="modal-title text-primary">TRAITEMENT DE LA DEMANDE</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeTraiterDemande">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+
+          <!-- Section 1 : Informations générales -->
+          <h5 class="text-secondary">Informations générales</h5>
+
+          <div class="form-row mb-3">
+            <div class="col-md-6">
+              <input type="text" name="nomBenificiaire" id="update-nomBenificiaire" class="form-control" placeholder="Nom du bénéficiaire" required>
+            </div>
+            <div class="col-md-6">
+              <input type="text" name="cin" id="update-cin" class="form-control" placeholder="CIN">
+            </div>
+          </div>
+
+          <div class="form-row mb-3">
+            <div class="col-md-6">
+              <input type="text" name="contact" id="update-contact" class="form-control" placeholder="Contact">
+            </div>
+            <div class="col-md-6">
+              <input type="date" name="dateDemande" id="update-dateDemande" class="form-control" placeholder="Date de la demande" required>
+            </div>
+          </div>
+
+          <div class="form-row mb-3">
+            <div class="col-md-6">
+              <input type="number" name="nbPersonnes" id="update-nbPersonnes" class="form-control" placeholder="Nombre de personnes">
+            </div>
+            <div class="col-md-6">
+              <input type="text" name="lieu" id="update-lieu" class="form-control" placeholder="Lieu">
+            </div>
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-md-6">
+              <input type="text" name="observation" id="update-observation" class="form-control" placeholder="Observation">
+            </div>
+            <div class="col-md-6">
+              <input type="text" name="description" id="update-description" class="form-control" placeholder="Description">
+            </div>
+          </div>
+
+          <hr> 
+
+          <!-- Section 2 : Détails de la demande -->
+          <h5 class="text-secondary">Détails de la demande</h5>
+
+          <div id="traiterDetailsDemandeContainer" class="container-fluid px-0">
+            <div class="form-row mb-3">
+              <div class="col-md-6">
+                <select class="form-control" id="traiter-typePrestationSelect">
+                  <option value="">Type prestation</option>
+                  {% for type in typePrestations %}
+                    <option value="{{ type.id }}">{{ type.libelle }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <select name="details[0][prestation]" id="traiter-prestationSelect" class="form-control">
+                  <option value="">Prestation</option>
+                  {% for prestation in prestations %}
+                    <option value="{{ prestation.id }}" data-type="{{ prestation.typePrestationId is not null ? prestation.typePrestationId.id : '' }}">
+                      {{ prestation.nomPrestation }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row mb-3">
+              <div class="col-md-6">
+                <select name="details[0][vehicule]" id="traiter-vehiculeSelect" class="form-control">
+                  <option value="">Véhicule</option>
+                  {% for vehicule in vehicules %}
+                    <option value="{{ vehicule.id }}">{{ vehicule.matricule }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <select name="details[0][conducteur]" id="traiter-conducteurSelect" class="form-control">
+                  <option value="">Conducteur</option>
+                  {% for conducteur in conducteurs %}
+                    <option value="{{ conducteur.id }}">{{ conducteur.nom }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer mt-auto d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

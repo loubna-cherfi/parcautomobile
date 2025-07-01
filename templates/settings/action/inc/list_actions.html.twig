@@ -1,0 +1,44 @@
+{# {% set current_path = "action" %} #}
+                    {% for index , a in allActions %}
+                    {% if a.active %}
+                    <tr>
+                        <td>{{a.id}}</td>
+                        <td>{{a.nom}}</td>
+                        <td>{{a.pSousModule.nom}}</td>
+                        <td>{{a.icon}}</td>
+                        <td>{{a.ord}}</td>
+                        <td>
+                        {% if a.horizontal  %}
+            <i class="fa-regular fa-circle-check actifIcon"></i><span class="actifIcon"></span>
+            {% else %}
+            <i class="fa-regular fa-circle-xmark inactifIcon"></i><span class="inactifIcon"></span>
+            {% endif %}
+                        </td>
+                        <td>{{a.className}}</td>
+                        <td>
+                            <div class="dropdown">
+                                <i class="menuActions fa-solid fa-ellipsis-vertical" id="{{a.id}}">
+                                </i>
+                                <div class="dropdown-menu dropdown-content divMenu" id="divMenu{{a.id}}">
+                                    {% for action in actions %}
+                                        {% if not action.horizontal %}
+                                            {% if action.nom == "ACTIVER" %}
+                                                {% if a.active %}
+                                                    <button class="{{action.className}} dropdown-item d-flex align-items-end " data-id="{{a.id}}"><i class="{{action.icon}} menuIcon"></i> DESACTIVER</button>
+                                                {% else %}
+                                                    <button class="{{action.className}} dropdown-item d-flex align-items-end" data-id="{{a.id}}"><i class="{{action.icon}} menuIcon"></i> ACTIVER</button>
+                                                {% endif %}
+                                            {% elseif action.nom == "MODIFIER" %}
+                                                    <button  class="{{action.className}} dropdown-item" data-toggle="modal"  data-id="{{a.id}}"><i class="{{action.icon}} menuIcon"></i> {{action.nom}}</button>
+                                            {% elseif action.nom == "SUPPRIMER" %}
+                                                    <button class="{{action.className}} dropdown-item" data-id="{{a.id}}"  id="btndeleteAction{{a.id}}"><i class="{{action.icon}} menuIcon"></i> {{action.nom}}</button>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}

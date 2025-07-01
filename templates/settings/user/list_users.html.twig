@@ -1,0 +1,43 @@
+{% for index, user in users %}
+<tr id="{{ user.id }}">
+    <td>{{index + 1}}</td>
+    <td>{{user.username}}</td>
+    <td>{{user.name}}</td>
+    
+    <td>{{ user.dateUpdate | date('Y-m-d H:m:s') }}</td>
+    <td>{{user.PProfession.description}}</td>
+    <td class="tdStatus">
+        {% if user.isActive %}
+        <i class="fa-regular fa-circle-check actifIcon"></i><span class="actifIcon"></span>
+        {% else %}
+        <i class="fa-regular fa-circle-xmark inactifIcon"></i><span class="inactifIcon"></span>
+        {% endif %}
+    </td>
+    <td>
+        <div class="dropdown">
+        <i class="menuActions fa-solid fa-ellipsis-vertical" id="{{user.id}}">
+                            </i>
+        <div class="dropdown-menu dropdown-content divMenu" id="divMenu{{user.id}}">
+            {% for action in actions %}
+                {% if not action.horizontal %}
+                    {% if action.nom == "ACTIVER" %}
+                        {% if user.isActive %}
+                            <button class="{{action.className}} dropdown-item" data-id="{{user.id}}"><i class="{{action.icon}} menuIcon"></i> DESACTIVER</button>
+                        {% else %}
+                            <button class="{{action.className}} dropdown-item " data-id="{{user.id}}"><i class="{{action.icon}} menuIcon"></i> ACTIVER</button>
+                        {% endif %}
+                    {% elseif action.nom == "MODIFIER" %}
+                            <button type="button" class="{{action.className}} dropdown-item" data-toggle="modal"  id="btnUpdateUser{{user.id}}"><i class="{{action.icon}} menuIcon"></i> {{action.nom}}</button>
+                    {% elseif action.nom == "SUPPRIMER" %}
+                            <button type="button" class="{{action.className}} dropdown-item" data-id="{{user.id}}"  id="btndeleteUser{{user.id}}"><i class="{{action.icon}} menuIcon"></i> {{action.nom}}</button>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+        </div>
+    </td>
+
+
+</tr>
+
+{% endfor %}

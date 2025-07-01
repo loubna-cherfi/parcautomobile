@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Choix du dossier{% endblock %}
+
+{% block stylesheets %}
+            {{ parent() }}
+            {{ encore_entry_link_tags('siteStyle') }}
+        {% endblock %}
+
+{% block javascripts %}
+            {{ parent() }}
+            {{ encore_entry_script_tags('setting_site') }}
+
+{% endblock %}
+
+
+{% block body %}
+
+<header class="header" id="header">
+      <div class="header_toggle ">
+      {# <i class="fa-solid fa-bars toggle_margin " id="header-toggle"></i> #}
+      </div>
+      <div class="profile mt-3">
+          <ul class="d-flex align-items-center">
+            <!-- Icon dropdown -->
+            {% if app.session.get('dossier') %}
+            <li class=" mr-3">
+              <a href="/app" class="d-flex align-items-center navBarIcons">
+                {# <i class="fas fa-folder"></i><span class="ml-2 small moduleHeader"> {{app.session.get('dossier').title}}</span> #}
+                <i class="fas fa-folder"></i><span class="ml-2 small moduleHeader"> {{app.session.get('dossier').cce0}}</span>
+              </a>
+            </li>
+
+            <li class=" mr-3">
+              <a href="/dossier/module/{{app.session.get('dossier').id}}" class="navBarIcons">
+                <i class="fas fa-gear"></i> 
+              </a>
+            </li>
+            {% endif %}
+            <li class="nav-item me-3 me-lg-0 dropdown">
+            
+              <button class="nav-link dropdown-toggle" id="navbarDropdown">
+              
+                <i class="fas fa-user"></i> {{app.user.username}}
+              </button>
+              <div class="dropdown-menu" id="divMenu">
+                  <a class="dropdown-item" href="{{path('app__profile')}}"><i class="fa-solid fa-pen-to-square"></i><span>Profile</span></a>
+                  {# <a class="" href="#"><i class="fa-solid fa-gear"></i> Paramétres</a> #}
+                  <a class="dropdown-item" href="{{path('app_logout')}}"><i class="fa-solid fa-right-from-bracket"></i><span>Decconexion</span></a>
+
+              </div>
+            </li>
+        </ul>
+      </div>
+      
+    </header>
+
+
+<div class="container">
+  <h1 class="mt-2">CHOIX DE SITE :</h1>
+
+  {% set arrUserSites = [] %}
+  {% for site in sites %}
+      {% if site.parent.id not in arrUserSites %}
+        {% set arrUserSites = arrUserSites|merge([site.parent.id]) %}
+      {% endif %}
+  {% endfor %}
+
+
+  <ul class="list-group pr-5" >  
+    {% for organisation in organisations %}
+    {% if organisation.active %}
+      <li class="d-flex justify-content-between align-items-center list-group-item menu-item" id="{{organisation.id}}">{{organisation.designation}}<i class="modulePlus fa-solid fa-plus float-right "></i></li>
+        <ul class="list-group subMenu" id="subMenu{{organisation.id}}">
+          {% for dossier in organisation.pDossiers %}
+           
+            {% if dossier.id in arrUserSites %}
+            <li class="d-flex justify-content-between align-items-center list-group-item subMenu-item" id="{{dossier.id}}">{{dossier.title}} <i class="submodulePlus fa-solid fa-plus float-right "></i></li>
+              <ul class="list-group listAction" id="action{{dossier.id}}">
+                  {% for site in sites %}
+                  {% if site.parent.id == dossier.id %}
+                      <li class="list-group-item action-item">
+                      <a class="siteLink" href="dossier/{{site.id}}">{{site.title}}</a>
+                      </li>  
+                        
+                  {% endif %}
+                  {% endfor %}  
+                </ul>
+            {% endif %}
+          {% endfor %}  
+        </ul>
+    {% endif %}
+    {% endfor %}  
+  </ul>
+
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,52 @@
+
+
+.selectUserAffect , #usersCheckAll{
+  margin-top:2px;
+}
+
+.subMenu , .listAction{
+  display:none;
+
+}
+
+.subMenu-item {
+  padding: 5px;
+  padding-left: 55px;
+  cursor: pointer;
+  font-weight: bold;
+
+}
+
+// .subMenu li:hover{
+//   background-color: #888888 ;
+//   color: #fff;
+
+// }
+
+.menu-item{
+  padding: 5px;
+  padding-left: 25px;
+  cursor: pointer;
+  font-weight: bold;
+
+}
+
+.menu-item:hover{
+  background-color: #7593ae;
+  color: #fff;
+
+}
+
+.action-item{
+  padding-left:65px !important;
+  padding: 5px;
+  cursor: pointer;
+
+
+}
+
+
+.divSelectDossier{
+  margin-left: -8px !important;
+
+}

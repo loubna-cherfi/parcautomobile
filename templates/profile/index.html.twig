@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+
+{% block javascripts %}
+            {{ parent() }}
+            {{ encore_entry_script_tags('setting_profile') }}
+
+        {% endblock %}
+
+{% block body %}
+
+
+
+
+<div class="container">
+    <div class="row d-flex justify-content-between">
+        <div class="col-md-6 mt-4">
+            <div class="card">
+            <div class="card-body">
+                
+                <input type="number" class="form-control" id="id" value="{{app.user.id}}" hidden>
+
+                <h6 class="card-title">Les informations personelles </h6>
+                <label for="fullName" class="form-label">Nom et prénom :</label>
+                <input type="text" class="form-control mb-2" name="fullName" id="fullName" value="{{app.user.name}}">
+
+                <label for="userName" class="form-label">Nom d'utilisateur :</label>
+                <input type="text" class="form-control mb-2" name="username" id="username" value="{{app.user.username}}" disabled>
+
+                <label for="active" class="form-label">Active :</label>
+                <div class="d-flex justify-content-start mb-1">
+                    <div class="d-flex align-items-end mr-3">
+                        <input type="radio" class="form-control mr-1 mb-1" {% if app.user.isIsActive %} checked {% endif %} name="active" value="active" id="active" >
+                        <label for="active" class="form-label"> Oui</label>
+                    </div>
+                    <div class="d-flex align-items-end">
+                        <input type="radio" class="form-control mr-1 mb-1" {% if not app.user.isIsActive %} checked {% endif %} name="active" value="desactive" id="desactive" >
+                        <label for="active" class="form-label"> Non</label>
+                    </div>
+
+                </div>
+
+
+                <label for="profession" class="form-label">Profession :</label>
+                <div class="d-flex justify-content-between ">
+                <select class="form-control shadow-none" aria-label="Default select example" id="profession" name="profession" required>
+                            <option value="" >PROFESSION</option>
+                            {% for profession in professions %}
+                            <option value="{{profession.id}}" {% if app.user.PProfession.id == profession.id %} selected {% endif %}>{{profession.description}}</option>{{profession.description}}</option>
+                            {% endfor %}
+                            
+                        </select>
+
+                </div>
+                <button type="submit" class="btn-sm btn btn-primary float-right mt-3 mb-3" id="saveInfoUser" data-spinner-size="18" data-style="expand-right">
+                    <span class="ladda-label">
+                    <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                    </span>
+                </button>  
+            </div>
+            </div>
+        </div>
+        <div class="col-md-6 mt-4">
+            <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Modifier mon mot de passe </h6>
+
+                <label for="currentPassword" class="form-label">Mot de passe actuel :</label>
+                <input type="password" class="form-control mb-2" name="currentPassword" id="currentPassword" >
+
+                <label for="newPassword" class="form-label">Nouveau mot de passe:</label>
+                <input type="password" class="form-control mb-2" name="newPassword" id="newPassword" >
+
+                <label for="repeatNewPassword" class="form-label">Confirmer le nouveau mot de passe:</label>
+                <input type="password" class="form-control mb-3" name="repeatNewPassword" id="repeatNewPassword" >
+                
+                        <button type="submit"  class="btn-sm btn btn-primary float-right mb-3" id="savePasswordChange" data-spinner-size="18" data-style="expand-right">
+                            <span class="ladda-label">
+                            <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                            </span>
+                        </button>  
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

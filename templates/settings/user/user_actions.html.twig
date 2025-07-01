@@ -1,0 +1,18 @@
+<ul class="list-group listModules" >
+{% for module in allModules %}
+    <li class="list-group-item menu-item" id="{{module.id}}"><i class="{{module.icon}} mr-2"></i>{{module.nom}}</li>
+    <ul class="list-group subMenu" id="subMenu{{module.id}}">
+        {% for subModule in module.pSousModule %}
+        <li class="list-group-item subMenu-item" id="{{ subModule.id }}">{{subModule.nom}}</li>
+            <ul class="list-group listAction" id="action{{subModule.id}}">
+                {% for action in subModule.pActions %}
+                    <li class="list-group-item action-item d-flex align-items-center">
+                    <input type="checkbox" name="action" class="checkboxAction" id="action-input{{action.id}}"{% if action.id in actionIds %} checked {% endif %}> 
+                    <label class="m-0 ml-2" for="action-input{{action.id}}">{{action.nom}}</label>
+                    </li>   
+                {% endfor %}  
+            </ul>
+        {% endfor %}  
+    </ul>
+{% endfor %}  
+</ul>
