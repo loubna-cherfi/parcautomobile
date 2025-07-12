@@ -21,19 +21,8 @@ class PZone
     #[ORM\Column]
     private ?bool $active = null;
 
-    #[ORM\Column(length:255)]
-    private ?float $tarif_jour = null;
-
-    #[ORM\Column(length:255 )]
-    private ?float $tarif_nuit = null;
-
-    #[ORM\OneToMany(mappedBy: 'zone_id', targetEntity: TDemandeDet::class)]
-    private Collection $tDemandeDets;
-
-    public function __construct()
-    {
-        $this->tDemandeDets = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(inversedBy: 'pZones')]
+    private ?User $user_created_id = null;
 
     public function getId(): ?int
     {
@@ -64,57 +53,17 @@ class PZone
         return $this;
     }
 
-    public function getTarifJour(): ?string
+    public function getUserCreatedId(): ?User
     {
-        return $this->tarif_jour;
+        return $this->user_created_id;
     }
 
-    public function setTarifJour(string $tarif_jour): static
+    public function setUserCreatedId(?User $user_created_id): static
     {
-        $this->tarif_jour = $tarif_jour;
+        $this->user_created_id = $user_created_id;
 
         return $this;
     }
 
-    public function getTarifNuit(): ?float
-    {
-        return $this->tarif_nuit;
-    }
 
-    public function setTarifNuit(float $tarif_nuit): static
-    {
-        $this->tarif_nuit = $tarif_nuit;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, TDemandeDet>
-     */
-    public function getTDemandeDets(): Collection
-    {
-        return $this->tDemandeDets;
-    }
-
-    public function addTDemandeDet(TDemandeDet $tDemandeDet): static
-    {
-        if (!$this->tDemandeDets->contains($tDemandeDet)) {
-            $this->tDemandeDets->add($tDemandeDet);
-            $tDemandeDet->setZoneId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTDemandeDet(TDemandeDet $tDemandeDet): static
-    {
-        if ($this->tDemandeDets->removeElement($tDemandeDet)) {
-            // set the owning side to null (unless already changed)
-            if ($tDemandeDet->getZoneId() === $this) {
-                $tDemandeDet->setZoneId(null);
-            }
-        }
-
-        return $this;
-    }
 }

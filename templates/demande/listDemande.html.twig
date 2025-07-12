@@ -34,13 +34,11 @@
                         <th>Benificiere</th>
                         <th>Contact</th>
                         <th>CIN</th>
-                        <th>Nomber des personnes</th>
+                        <th>Nomber personnes</th>
+                        <th>Ville mission</th>
                         <th>Tarif total</th>
                          <th>Description</th>
                         <th>observation</th>
-                        {# <th>Date traitement</th>
-                        <th>Date validation</th> #}
-                        {# <th>Statut</th> #}
                         <th>Statut</th>
                         <th>Actions</th>
                     </tr>
@@ -49,22 +47,24 @@
                     {% for index, demande in demandes %}
                         <tr id="{{ demande.id }}">
                                 <td>{{ index + 1 }}</td>
-                                <td>
-    {% set nomComplet = demande.dossierId ? demande.dossierId.nomDossier ?? 'N/A' : 'N/A' %}
-    {% if nomComplet|length > 4 %}
-        <span data-toggle="tooltip" title="{{ nomComplet }}">
-            {{ nomComplet[:4] }}...
-        </span>
-    {% else %}
-        {{ nomComplet }}
-    {% endif %}
+                           <td>
+  {% set nomComplet = demande.dossierId ? demande.dossierId.nomDossier ?? 'N/A' : 'N/A' %}
+  {% if nomComplet|length > 4 %}
+    <span data-bs-toggle="tooltip" title="{{ nomComplet }}">
+      {{ nomComplet[:4] }}...
+    </span>
+  {% else %}
+    {{ nomComplet }}
+  {% endif %}
 </td>
+
 
                                 <td>{{ demande.dateDemande ? demande.dateDemande|date('d/m/Y') : '' }}</td>
                                 <td>{{ demande.nomBenificiaire }}</td>
                                 <td>{{ demande.contact }}</td>
                                 <td>{{ demande.cin }}</td>
                                 <td>{{ demande.nbPersonnes }}</td>
+                                <td>{{ demande.villeMission }}</td>
                                 <td>{{ demande.tarifTotal }}</td>
                                 <td>{{ demande.description }}</td>
                                 <td>{{ demande.observation }}</td>
@@ -77,10 +77,9 @@
                                 <i class="fa-regular fa-circle-xmark inactifIcon"></i>
                                 {% endif %}
                                 </td>         
-                            <td>
+                            <td>    
   <div class="dropdown">
     <button class="btn " type="button" id="dropdownMenuButton{{ demande.id }}" data-toggle="dropdown">
-    {# <button class="dropdown-item btnUpdateConducteur" data-id="{{ conducteur.id }}" data-toggle="modal" data-target="#updateConducteur"> #}
 
       <i class="fa-solid fa-ellipsis-vertical"></i>
     </button>
@@ -91,7 +90,9 @@
     <button class="dropdown-item btnTraiterDemande" data-id="{{ demande.id }}" data-toggle="modal" data-target="#traiterDemande">
   <i class="fa-solid fa-pen-to-square"></i> Traiter
 </button>
-
+   <button class="dropdown-item btnValiderDemande" data-id="{{ demande.id }}" data-toggle="modal" data-target="">
+  <i class="fa fa-check"></i> Valider
+</button>
  
      
     </div>
@@ -123,9 +124,8 @@
                 <th>Prestation</th>
                 <th>Véhicule</th>
                 <th>Conducteur</th>
-                <th>Zone</th>
+                {# <th>Zone</th> #}
                 <th>Lieu</th>
-                <th>Ville</th>
                 <th>Heure</th>
                 <th>Tarif unique</th>
               </tr>
@@ -153,9 +153,9 @@
         <td>{{ detail.prestationId.nomPrestation ?? '' }}</td>
         <td>{{ detail.vehiculeId.matricule ?? '' }}</td>
         <td>{{ detail.conducteurId.nom ?? '' }}</td>
-        <td>{{ detail.zoneId.libelle ?? '' }}</td>
+      
         <td>{{ detail.lieu }}</td>
-        <td>{{ detail.ville }}</td>
+        
         <td>{{ detail.heure ? detail.heure|date('H:i') : '' }}</td>
         <td>{{ detail.tarif }}</td>
        
@@ -169,9 +169,9 @@
 
 <!-- MODAL AJOUTER UNE DEMANDE -->
 <div class="modal right fade" id="addDemande" tabindex="-1" role="dialog" aria-labelledby="addDemandeLabel" aria-hidden="true">
-  <div class="modal-dialog" style="width: 40%;" role="document">
+  <div class="modal-dialog" style="width: 90%;" role="document">
     <div class="modal-content d-flex flex-column h-100">
-      <form id="formAddDemande" method="POST" action="">
+      <form id="formAddDemande" method="POST" action="{{ path('demande_ajouter') }}">
         <div class="modal-header">
           <h5 class="modal-title text-primary">AJOUTER UNE NOUVELLE DEMANDE</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeAddDemande">
@@ -179,212 +179,335 @@
           </button>
         </div>
 
-        <div class="modal-body">
+      <div class="modal-body">
+  <div class="row">
+    <!-- 🔹 Section 1 : Informations générales -->
+    <div class="col-md-6">
+      <h5 class="text-secondary">Informations générales</h5>
 
-          <!-- Section 1 : Informations générales -->
-          <h5 class="text-secondary">Informations générales</h5>
-
-          <div class="form-row mb-3">
-            <div class="col-md-6">
-              <input type="text" name="nomBenificiaire" class="form-control" placeholder="Nom du bénéficiaire" required>
-            </div>
-            <div class="col-md-6">
-              <input type="text" name="cin" class="form-control" placeholder="CIN">
-            </div>
-          </div>
-
-          <div class="form-row mb-3">
-            <div class="col-md-6">
-              <input type="text" name="contact" class="form-control" placeholder="Contact">
-            </div>
-            <div class="col-md-6">
-              <input type="date" name="dateDemande" class="form-control" placeholder="Date de la demande" required>
-            </div>
-          </div>
-
-          <div class="form-row mb-3">
-            <div class="col-md-6">
-              <input type="number" name="nbPersonnes" class="form-control" placeholder="Nombre de personnes">
-            </div>
-            <div class="col-md-6">
-              <input type="text" name="lieu" class="form-control" placeholder="Lieu">
-            </div>
-          </div>
-
-          <div class="form-row mb-4">
-            <div class="col-md-6">
-              <input type="text" name="observation" class="form-control" placeholder="Observation">
-            </div>
-            <div class="col-md-6">
-              <input type="text" name="description" class="form-control" placeholder="Description">
-            </div>
-          </div>
-
-          <hr>
-
-          <!-- Section 2 : Détails de la demande -->
-          <h5 class="text-secondary">Détails de la demande</h5>
-
-          <div id="detailsDemandeContainer" class="container-fluid px-0">
-           
-
-            <div class="form-row mb-3">
-              <div class="col-md-6">
-                <select name="details[0][vehicule]" class="form-control">
-                  <option value="">Véhicule</option>
-                  {% for vehicule in vehicules %}
-                    <option value="{{ vehicule.id }}">{{ vehicule.matricule }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <div class="col-md-6">
-                <select name="details[0][conducteur]" class="form-control">
-                  <option value="">Conducteur</option>
-                  {% for conducteur in conducteurs %}
-                    <option value="{{ conducteur.id }}">{{ conducteur.nom }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-
-            <div class="text-right mb-3">
-              <button type="button" class="btn btn-outline-primary btn-sm" id="add-detail">
-                <i class="fa fa-plus"></i> Ajouter un détail
-              </button>
-            </div>
-          </div>
-   
+      <div class="form-row">
+        <div class="col-md-6 mb-2">
+          <input type="text" name="nomBenificiaire" class="form-control form-control-sm" placeholder="Nom du bénéficiaire" required>
         </div>
+        <div class="col-md-6 mb-2">
+          <input type="text" name="cin" class="form-control form-control-sm" placeholder="CIN">
+        </div>
+      </div>
 
-        <!-- Footer -->
+   
+
+      <div class="form-row">
+        <div class="col-md-6 mb-2">
+          <input type="text" name="observation" class="form-control form-control-sm" placeholder="Observation">
+        </div>
+        <div class="col-md-6 mb-2">
+          <input type="text" name="description" class="form-control form-control-sm" placeholder="Description">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="col-md-6 mb-2">
+          <input type="text" name="contact" class="form-control form-control-sm" placeholder="Contact">
+        </div>
+       <div class="col-md-6 mb-2">
+          <input type="number" name="nbPersonnes" class="form-control form-control-sm" placeholder="Nombre de personnes">
+        </div>
+      </div>
+         <div class="form-row">
+       
+        <div class="col-md-6 mb-2">
+          <input type="datetime-local" name="dateDemande" class="form-control form-control-sm" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔸 Section 2 : Détails -->
+    <div class="col-md-6">
+      <h5 class="text-secondary">Détails de la demande</h5>
+
+      <div class="form-row">
+        <div class="col-md-6 mb-2">
+          <select name="details[0][vehicule]" class="form-control form-control-sm">
+            <option value="">Véhicule</option>
+            {% for vehicule in vehicules %}
+              <option value="{{ vehicule.id }}">{{ vehicule.matricule }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6 mb-2">
+          <select name="details[0][conducteur]" class="form-control form-control-sm">
+            <option value="">Conducteur</option>
+            {% for conducteur in conducteurs %}
+              <option value="{{ conducteur.id }}">{{ conducteur.nom }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="col-md-6 mb-2">
+          <select name="details[0][type_prestation]" class="form-control form-control-sm" id="add-type-prestation">
+            <option value="">Type de prestation</option>
+            {% for type in typePrestations %}
+              <option value="{{ type.id }}">{{ type.libelle }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6 mb-2">
+          <select name="details[0][zone]" class="form-control form-control-sm" id="add-zone">
+            <option value="">Zone</option>
+            {% for zone in zones %}
+              <option value="{{ zone.id }}">{{ zone.libelle }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group mb-2">
+        <select name="details[0][prestation]" class="form-control form-control-sm" id="add-prestation-0">
+          <option value="">Prestation</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="col-md-6 mb-2">
+          <input type="number" name="details[0][quantite]" class="form-control form-control-sm" placeholder="Quantité">
+        </div>
+        <div class="col-md-6 mb-2">
+          <input type="number" name="details[0][nb_jours]" class="form-control form-control-sm" placeholder="Nombre de jours">
+        </div>
+      </div>
+
+      <div class="text-right">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="add-detail">
+          <i class="fa fa-plus"></i> Ajouter un détail
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔽 Tableau caché au départ -->
+  <div class="mt-3" id="table-details-container" style="display: none;">
+    <table class="table table-sm table-bordered" id="table-details">
+      <thead class="thead-light">
+        <tr>
+          <th>#</th>
+          <th>Véhicule</th>
+          <th>Conducteur</th>
+          <th>Type prestation</th>
+          <th>Zone</th>
+          <th>Prestation</th>
+          <th>Quantité</th>
+          <th>Jours</th>
+          <th>Tarif</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>   
+</div>
+
         <div class="modal-footer mt-auto d-flex justify-content-end">
           <button type="submit" class="btn btn-primary btn-sm">
             <i class="fa-regular fa-floppy-disk"></i> Enregistrer
-          </button>   
+          </button>
+          <button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Annuler</button>
         </div>
-
       </form>
     </div>
   </div>
 </div>
 
-<!-- MODAL traiter UNE DEMANDE -->
+<!-- MODAL Traiter une demande -->
 <div class="modal right fade" id="traiterDemande" tabindex="-1" role="dialog" aria-labelledby="traiterDemandeLabel" aria-hidden="true">
-  <div class="modal-dialog" style="width: 40%;" role="document">
-    <div class="modal-content d-flex flex-column h-100">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
       <form id="formTraiterDemande" method="POST" action="">
         <input type="hidden" name="id" id="traiter-idDemande">
 
         <div class="modal-header">
           <h5 class="modal-title text-primary">TRAITEMENT DE LA DEMANDE</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeTraiterDemande">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
 
         <div class="modal-body">
+          <!-- Partie haute : Infos générales -->
+          <h5 class="text-primary">Informations générales</h5>
+        <div class="row mb-3">
+  <div class="col-md-3">
+    <label for="update-nomBenificiaire">Nom bénéficiaire</label>
+    <input type="text" name="nomBenificiaire" id="update-nomBenificiaire" class="form-control" readonly>
+  </div>
+  <div class="col-md-3">
+    <label for="update-cin">CIN</label>
+    <input type="text" name="cin" id="update-cin" class="form-control" readonly>
+  </div>
+  <div class="col-md-3">
+    <label for="update-contact">Contact</label>
+    <input type="text" name="contact" id="update-contact" class="form-control" readonly>
+  </div>
+  <div class="col-md-3">
+    <label for="update-dateDemande">Date de la demande</label>
+    <input type="date" name="dateDemande" id="update-dateDemande" class="form-control" readonly>
+  </div>
+</div>
 
-          <!-- Section 1 : Informations générales -->
-          <h5 class="text-secondary">Informations générales</h5>
+<div class="row mb-3">
+  <div class="col-md-3">
+    <label for="update-nbPersonnes">Nombre de personnes</label>
+    <input type="number" name="nbPersonnes" id="update-nbPersonnes" class="form-control" readonly>
+  </div>
+  <div class="col-md-3">
+    <label for="update-observation">Observation</label>
+    <input type="text" name="observation" id="update-observation" class="form-control" readonly>
+  </div>
+  <div class="col-md-3">
+    <label for="update-description">Description</label>
+    <input type="text" name="description" id="update-description" class="form-control" readonly>
+  </div>
+</div>
 
-          <div class="form-row mb-3">
-            <div class="col-md-6">
-              <input type="text" name="nomBenificiaire" id="update-nomBenificiaire" class="form-control" placeholder="Nom du bénéficiaire" required>
-            </div>
-            <div class="col-md-6">
-              <input type="text" name="cin" id="update-cin" class="form-control" placeholder="CIN">
-            </div>
+
+
+          <hr>
+  
+
+          <!-- Partie basse : Tableau dynamique -->
+          <h5 class="text-primary">Détails de la demande</h5>
+          <div class="table-responsive">
+            <table class="table table-bordered" id="detailsTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Lieu</th>
+                  <th>Ville</th>
+                  <th>Heure</th>
+                  <th>Conducteur</th>
+                  <th>Véhicule</th>
+                  <th>Type prestation</th>
+                  <th>Prestation</th>
+                  <th>Tarif</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="detailsTraiterBody">
+                <!-- Rempli dynamiquement par JavaScript -->
+              </tbody>
+            </table>
           </div>
-
-          <div class="form-row mb-3">
-            <div class="col-md-6">
-              <input type="text" name="contact" id="update-contact" class="form-control" placeholder="Contact">
-            </div>
-            <div class="col-md-6">
-              <input type="date" name="dateDemande" id="update-dateDemande" class="form-control" placeholder="Date de la demande" required>
-            </div>
-          </div>
-
-          <div class="form-row mb-3">
-            <div class="col-md-6">
-              <input type="number" name="nbPersonnes" id="update-nbPersonnes" class="form-control" placeholder="Nombre de personnes">
-            </div>
-            <div class="col-md-6">
-              <input type="text" name="lieu" id="update-lieu" class="form-control" placeholder="Lieu">
-            </div>
-          </div>
-
-          <div class="form-row mb-4">
-            <div class="col-md-6">
-              <input type="text" name="observation" id="update-observation" class="form-control" placeholder="Observation">
-            </div>
-            <div class="col-md-6">
-              <input type="text" name="description" id="update-description" class="form-control" placeholder="Description">
-            </div>
-          </div>
-
-          <hr> 
-
-          <!-- Section 2 : Détails de la demande -->
-          <h5 class="text-secondary">Détails de la demande</h5>
-
-          <div id="traiterDetailsDemandeContainer" class="container-fluid px-0">
-            <div class="form-row mb-3">
-              <div class="col-md-6">
-                <select class="form-control" id="traiter-typePrestationSelect">
-                  <option value="">Type prestation</option>
-                  {% for type in typePrestations %}
-                    <option value="{{ type.id }}">{{ type.libelle }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <div class="col-md-6">
-                <select name="details[0][prestation]" id="traiter-prestationSelect" class="form-control">
-                  <option value="">Prestation</option>
-                  {% for prestation in prestations %}
-                    <option value="{{ prestation.id }}" data-type="{{ prestation.typePrestationId is not null ? prestation.typePrestationId.id : '' }}">
-                      {{ prestation.nomPrestation }}
-                    </option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-
-            <div class="form-row mb-3">
-              <div class="col-md-6">
-                <select name="details[0][vehicule]" id="traiter-vehiculeSelect" class="form-control">
-                  <option value="">Véhicule</option>
-                  {% for vehicule in vehicules %}
-                    <option value="{{ vehicule.id }}">{{ vehicule.matricule }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <div class="col-md-6">
-                <select name="details[0][conducteur]" id="traiter-conducteurSelect" class="form-control">
-                  <option value="">Conducteur</option>
-                  {% for conducteur in conducteurs %}
-                    <option value="{{ conducteur.id }}">{{ conducteur.nom }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-          </div>
-
         </div>
 
-        <!-- Footer -->
-        <div class="modal-footer mt-auto d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary btn-sm">
-            <i class="fa-regular fa-floppy-disk"></i> Enregistrer
-          </button>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Enregistrer</button>
         </div>
-
       </form>
     </div>
   </div>
 </div>
+<!-- MODAL MODIFIER UN DÉTAIL -->
+<div class="modal right fade"id="modifierDetailModal"  role="dialog" tabindex="-1" aria-labelledby="modifierDetailModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <form id="formModifierDetail">
+      <div class="modal-header">
+  <h5 class="modal-title text-primary">Modifier le détail</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+        <div class="modal-body">
+          <input type="hidden" name="detailIndex" id="modifier-detail-index">
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="modifier-vehicule">Véhicule</label>
+              <select id="modifier-vehicule" name="vehicule" class="form-control">
+                {% for vehicule in vehicules %}
+                  <option value="{{ vehicule.id }}">{{ vehicule.matricule }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="modifier-conducteur">Conducteur</label>
+              <select id="modifier-conducteur" name="conducteur" class="form-control">
+                {% for conducteur in conducteurs %}
+                  <option value="{{ conducteur.id }}">{{ conducteur.nom }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="modifier-type-prestation">Type de prestation</label>
+              <select id="modifier-type-prestation" name="type_prestation" class="form-control">
+                {% for type in typePrestations %}
+                  <option value="{{ type.id }}">{{ type.libelle }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="modifier-prestation">Prestation</label>
+              <select id="modifier-prestation" name="prestation" class="form-control">
+                {% for prestation in prestations %}
+                  <option value="" data-type="">{{ prestation.nomPrestation }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          {# <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="modifier-zone">Zone</label>
+              <select id="modifier-zone" name="zone" class="form-control">
+               
+                  <option value=""></option>
+                
+              </select>
+            </div> #}
+            <div class="col-md-6">
+              <label for="modifier-lieu">Lieu</label>
+              <input type="text" class="form-control" id="modifier-lieu" name="lieu">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="modifier-ville">Ville</label>
+              <input type="text" class="form-control" id="modifier-ville" name="ville">
+            </div>
+            <div class="col-md-3">
+              <label for="modifier-heure">Heure</label>
+              <input type="time" class="form-control" id="modifier-heure" name="heure">
+            </div>
+            <div class="col-md-3">
+              <label for="modifier-tarif">Tarif</label>
+              <input type="number" class="form-control" id="modifier-tarif" name="tarif">
+            </div>
+          </div>
+        </div>
+
+      <div class="modal-footer d-flex justify-content-end">
+  <button type="submit" class="btn btn-primary">   <i class="fa-regular fa-floppy-disk"></i>Enregistrer</button>
+  <button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Fermer</button>
+</div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  const conducteurs = {{ conducteurs|json_encode|default('[]')|raw }};
+  const vehicules = {{ vehicules|json_encode|default('[]')|raw }};
+  const prestations = {{ prestations|json_encode|default('[]')|raw }};
+  const typePrestations = {{ typePrestations|json_encode|default('[]')|raw }};
+</script>
+
+
 
 {% endblock %}

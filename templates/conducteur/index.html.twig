@@ -66,9 +66,9 @@
                                         <button class="dropdown-item btnToggleStatusConducteur" data-id="{{ conducteur.id }}">
                                             <i class="fa fa-toggle-on"></i> {% if conducteur.active %}Désactiver{% else %}Activer{% endif %}
                                         </button>
-                                        <button class="dropdown-item btnDeleteConducteur" data-id="{{ conducteur.id }}">
+                                        {# <button class="dropdown-item btnDeleteConducteur" data-id="{{ conducteur.id }}">
                                             <i class="fa fa-trash"></i> Supprimer
-                                        </button>
+                                        </button> #}
                                     </div>
                                 </div>
                             </td>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="d-flex justify-content-between">
                     <input type="text" class="form-control m-2" name="permisNumero" id="permisNumero" placeholder="NUMÉRO DE PERMIS" required/>
-                    {# <input type="date" class="form-control m-2" name="permisDateObtention" id="permisDateObtention" placeholder="PERMIS DATE OBTENTION" required/> #}
+                    <input type="date" class="form-control m-2" name="permisDateObtention" id="permisDateObtention" placeholder="PERMIS DATE OBTENTION" required/>
                     <input type="text" class="form-control m-2" name="permisType" id="permisType" placeholder="TYPE DE PERMIS" required/>
 
 
@@ -107,11 +107,12 @@
                   <div class="d-flex justify-content-between">
                     <input type="text" class="form-control m-2" name="email" id="email" placeholder="EMAIL" required/>
                     <input type="text" class="form-control m-2" name="adresse" id="adresse" placeholder="ADRESSE" required/>
+                    <input type="date" class="form-control m-2" name="dateNaissance" id="dateNaissance" placeholder="DATE DE NAISSANCE" required/> 
+
 
 
                 </div>
                   {# <div class="d-flex justify-content-between">
-                    {# <input type="date" class="form-control m-2" name="dateNaissance" id="dateNaissance" placeholder="DATE DE NAISSANCE" required/> #}
 
                 {# </div> #}
                 <div class="d-flex m-2">
@@ -126,7 +127,7 @@
                 </div>
             </div>
             <div class="modal-footer m-2">
-                <button type="submit" class="btn-sm btn btn-primary saveAddConducteur ladda-button" data-spinner-size="18" data-style="expand-right">
+                <button type="button" class="btn-sm btn btn-primary saveAddConducteur ladda-button" data-spinner-size="18" data-style="expand-right">
                     <span class="ladda-label">
                         <i class="fa-regular fa-floppy-disk"></i> Enregistrer
                     </span>
@@ -189,7 +190,7 @@
                 </div>
             </div>
             <div class="modal-footer m-2">
-                <button type="submit" id="updateBtn" class="btn-sm btn btn-primary saveUpdateConducteur ladda-button" data-spinner-size="18" data-style="expand-right">
+                <button type="button" id="updateBtn" class="btn-sm btn btn-primary saveUpdateConducteur ladda-button" data-spinner-size="18" data-style="expand-right">
                     <span class="ladda-label">
                         <i class="fa-regular fa-floppy-disk"></i> Enregistrer
                     </span>

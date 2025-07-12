@@ -69,20 +69,27 @@
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/738.8dac8cdc.js",
-        "/build/settings_vehicule.485d6f46.js"
+        "/build/settings_vehicule.081d8b54.js"
       ]
     },
     "settings_conducteur": {
       "js": [
         "/build/runtime.6c30001d.js",
-        "/build/settings_conducteur.e05cce1e.js"
+        "/build/settings_conducteur.37c49e4f.js"
       ]
     },
     "settings_demande": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/738.8dac8cdc.js",
-        "/build/settings_demande.ce404717.js"
+        "/build/settings_demande.176b4937.js"
+      ]
+    },
+    "settings_mission": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/738.8dac8cdc.js",
+        "/build/settings_mission.7ba8e687.js"
       ]
     },
     "login": {
@@ -115,6 +122,14 @@
       ],
       "css": [
         "/build/choix_site.34485e1a.css"
+      ]
+    },
+    "mission": {
+      "js": [
+        "/build/runtime.6c30001d.js"
+      ],
+      "css": [
+        "/build/mission.31d6cfe0.css"
       ]
     }
   }
