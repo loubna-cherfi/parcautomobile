@@ -77,7 +77,7 @@ class TDemandeCab
    
 
        #[ORM\Column(length: 255,nullable: true)]
-    private ?string $ville_mission = null;
+    private ?string $adressdepart = null;
 
     public function __construct()
     {
@@ -344,14 +344,14 @@ class TDemandeCab
         return $this;
     }
 
-    public function getVilleMission(): ?string
+    public function getAdressDepart(): ?string
     {
-        return $this->ville_mission;
+        return $this->adressdepart;
     }
 
-    public function setVilleMission(string $ville_mission): static
+    public function setAdressDepart(string $adressdepart): static
     {
-        $this->ville_mission = $ville_mission;
+        $this->adressdepart = $adressdepart;
 
         return $this;
     }

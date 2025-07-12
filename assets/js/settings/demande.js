@@ -1,10 +1,12 @@
 $(document).ready(function () {
+  // 📊 Initialisation DataTable
   $('#demandeTable').DataTable({
     lengthMenu: [[15, 25, 50, -1], [15, 25, 50, 'ALL']],
     autoWidth: false,
     destroy: true
   });
 
+  // 🧩 Tooltips pour Bootstrap 4 ou 5
   const isBootstrap5 = typeof bootstrap !== 'undefined' && typeof bootstrap.Tooltip !== 'undefined';
   if (isBootstrap5) {
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
@@ -14,19 +16,43 @@ $(document).ready(function () {
 
   let detailIndex = 0;
 
-  // ➕ Ajouter un détail avec calcul tarif réel
+  // 🔄 Réinitialiser les champs du formulaire après ajout d'un détail
+  function resetDetailFields() {
+    $('#zone-detail select, #zone-detail input').each(function () {
+      const el = $(this);
+      const tag = el.prop('tagName').toLowerCase();
+      if (tag === 'select') {
+        const id = el.attr('id');
+        if (id === 'add-prestation-0') {
+          el.html('<option value="">Prestation</option>');
+        } else if (id && $('#templates #' + id + '-template').length) {
+          el.html($('#templates #' + id + '-template').html());
+        }
+        el.val('');
+      } else {
+        el.val('');
+      }
+      el.removeAttr('name');
+    });
+  }
+
+  // 🔢 Ajouter un nouveau détail
   $('#add-detail').on('click', function () {
-    const vehicule = $('select[name="details[0][vehicule]"] option:selected');
-    const conducteur = $('select[name="details[0][conducteur]"] option:selected');
-    const typePrestation = $('select[name="details[0][type_prestation]"] option:selected');
-    const zone = $('select[name="details[0][zone]"] option:selected');
-    const prestation = $('select[name="details[0][prestation]"] option:selected');
-    const quantite = $('input[name="details[0][quantite]"]').val();
-    const nbJours = $('input[name="details[0][nb_jours]"]').val();
+    const getValue = name => $(`select[name="details[0][${name}]"] option:selected`);
+    const vehicule = getValue('vehicule');
+    const conducteur = getValue('conducteur');
+    const typePrestation = getValue('type_prestation');
+    const zone = getValue('zone');
+    const prestation = getValue('prestation');
+    const quantiteInput = $('input[name="details[0][quantite]"]');
+    const nbJoursInput = $('input[name="details[0][nb_jours]"]');
+
+    const quantite = parseInt(quantiteInput.val()) || 0;
+    const nbJours = parseInt(nbJoursInput.val()) || 0;
     const dateDemande = $('input[name="dateDemande"]').val();
 
-    if (!vehicule.val() || !conducteur.val() || !typePrestation.val() || !zone.val() || !prestation.val() || !quantite || !nbJours) {
-      alert('Veuillez remplir tous les champs du détail.');
+    if (!vehicule.val() || !conducteur.val() || !typePrestation.val() || !zone.val() || !prestation.val() || quantite <= 0 || nbJours <= 0) {
+      alert('Veuillez remplir tous les champs du détail avec des valeurs valides.');
       return;
     }
 
@@ -53,17 +79,12 @@ $(document).ready(function () {
             <td>${quantite}<input type="hidden" name="details[${detailIndex}][quantite]" value="${quantite}"></td>
             <td>${nbJours}<input type="hidden" name="details[${detailIndex}][nb_jours]" value="${nbJours}"></td>
             <td>${tarif.toFixed(2)}<input type="hidden" name="details[${detailIndex}][tarif]" value="${tarif.toFixed(2)}"></td>
-            <td><button class="btn btn-sm btnRemoveDetail"><i class="fa fa-trash"></i></button></td>
+            <td><button class="btn btn-sm btnRemoveDetail" type="button"><i class="fa fa-trash"></i></button></td>
           </tr>
         `);
 
         detailIndex++;
-
-        // ✅ Supprimer les champs de base pour éviter qu’ils soient soumis
-        $('select[name^="details[0]"]').removeAttr('name');
-        $('input[name="details[0][quantite]"]').val('').removeAttr('name');
-        $('input[name="details[0][nb_jours]"]').val('').removeAttr('name');
-        $('#add-prestation-0').html('<option value="">Prestation</option>').removeAttr('name');
+        resetDetailFields();
       },
       error: function () {
         alert('Erreur lors du calcul du tarif.');
@@ -75,20 +96,19 @@ $(document).ready(function () {
   $(document).on('click', '.btnRemoveDetail', function () {
     $(this).closest('tr').remove();
 
-    // ❗ Cacher le tableau s’il n’y a plus de lignes
     if ($('#table-details tbody tr').length === 0) {
       $('#table-details-container').hide();
       detailIndex = 0;
     }
   });
 
-  // 🔽 Filtres dynamiques : prestations par type + zone
-  function filterPrestationsAjax(typeSelect, zoneSelect, prestationSelect) {
-    const selectedType = $(typeSelect).val();
-    const selectedZone = $(zoneSelect).val();
+  // 🔽 Charger les prestations dynamiquement
+  function filterPrestationsAjax(typeSelector, zoneSelector, prestationSelector) {
+    const selectedType = $(typeSelector).val();
+    const selectedZone = $(zoneSelector).val();
 
     if (!selectedType || !selectedZone) {
-      $(prestationSelect).html('<option value="">Sélectionner une prestation</option>');
+      $(prestationSelector).html('<option value="">Sélectionner une prestation</option>');
       return;
     }
 
@@ -98,13 +118,13 @@ $(document).ready(function () {
       data: { type: selectedType, zone: selectedZone },
       success: function (data) {
         let options = '<option value="">Sélectionner une prestation</option>';
-        data.forEach(function (prestation) {
-          options += `<option value="${prestation.id}">${prestation.nom}</option>`;
+        data.forEach(p => {
+          options += `<option value="${p.id}">${p.nom}</option>`;
         });
-        $(prestationSelect).html(options);
+        $(prestationSelector).html(options);
       },
       error: function () {
-        $(prestationSelect).html('<option value="">Erreur de chargement</option>');
+        $(prestationSelector).html('<option value="">Erreur de chargement</option>');
       }
     });
   }
@@ -113,19 +133,14 @@ $(document).ready(function () {
     filterPrestationsAjax('#add-type-prestation', '#add-zone', '#add-prestation-0');
   });
 
-  // 🕓 Remplir automatiquement la date/heure actuelle
+  // 🕒 Remplir la date actuelle automatiquement à l'ouverture du modal
   $('#addDemande').on('shown.bs.modal', function () {
     const now = new Date();
-    const yyyy = now.getFullYear();
-    const mm = String(now.getMonth() + 1).padStart(2, '0');
-    const dd = String(now.getDate()).padStart(2, '0');
-    const hh = String(now.getHours()).padStart(2, '0');
-    const min = String(now.getMinutes()).padStart(2, '0');
-    const formatted = `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+    const formatted = now.toISOString().slice(0, 16);
     $('input[name="dateDemande"]').val(formatted);
   });
 
-  // ❗ Empêcher soumission s’il n’y a pas de détail
+  // 🚫 Empêcher la soumission sans détails
   $('#formAddDemande').on('submit', function (e) {
     if ($('#table-details tbody tr').length === 0) {
       alert('Veuillez ajouter au moins un détail avant de soumettre.');
