@@ -31,7 +31,7 @@
                         <th>Modèle</th>
                         <th>Carburant</th>
                         <th>Transmission</th>
-                        <th>Kilométrage</th>
+                        <th>Kilométrage</th>   
                         <th>Capacité</th>
                         <th>Statut</th>
                         <th>Actions</th>
@@ -64,9 +64,9 @@
                                         <button class="dropdown-item btnToggleStatusVehicule" data-id="{{ v.id }}">
                                             <i class="fa fa-toggle-on"></i> {% if v.active %}Désactiver{% else %}Activer{% endif %}
                                         </button>
-                                        <button class="dropdown-item btnDeleteVehicule" data-id="{{ v.id }}">
+                                        {# <button class="dropdown-item btnDeleteVehicule" data-id="{{ v.id }}">
                                             <i class="fa fa-trash"></i> Supprimer
-                                        </button>
+                                        </button> #}
                                     </div>
                                 </div>
                             </td>
@@ -139,7 +139,7 @@
             </div>
         </div>
 
-      {# Modal Update Vehicule #}
+ {# Modal Update Vehicule #}
 <div class="modal right fade" id="updateVehicule" role="dialog" aria-labelledby="updateVehicule" aria-hidden="true">
     <div class="modal-dialog" style="width:40%" role="document">
         <div class="modal-content">

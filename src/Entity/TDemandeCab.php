@@ -19,8 +19,6 @@ class TDemandeCab
     #[ORM\ManyToOne(inversedBy: 'tDemandeCabs')]
     private ?User $created_user_id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_creation = null;
 
     #[ORM\ManyToOne(inversedBy: 'tDemandeCabs')]
     private ?Pentite $dossier_id = null;
@@ -33,6 +31,9 @@ class TDemandeCab
 
     #[ORM\Column(length: 255)]
     private ?string $contact = null;
+
+  
+
 
     #[ORM\Column(length: 255)]
     private ?string $cin = null;
@@ -55,13 +56,13 @@ class TDemandeCab
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?User $traitant_user_id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE,nullable:true)]
     private ?\DateTimeInterface $date_traitement = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?User $validateur_user_id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE,nullable:true)]
     private ?\DateTimeInterface $date_validation = null;
 
     #[ORM\Column]
@@ -72,6 +73,11 @@ class TDemandeCab
 
     #[ORM\OneToMany(mappedBy: 'demande_id', targetEntity: TMissionCab::class)]
     private Collection $tMissionCabs;
+
+   
+
+       #[ORM\Column(length: 255,nullable: true)]
+    private ?string $ville_mission = null;
 
     public function __construct()
     {
@@ -96,17 +102,6 @@ class TDemandeCab
         return $this;
     }
 
-    public function getDateCreation(): ?\DateTimeInterface
-    {
-        return $this->date_creation;
-    }
-
-    public function setDateCreation(\DateTimeInterface $date_creation): static
-    {
-        $this->date_creation = $date_creation;
-
-        return $this;
-    }
 
     public function getDossierId(): ?Pentite
     {
@@ -160,6 +155,7 @@ class TDemandeCab
     {
         return $this->cin;
     }
+    
 
     public function setCin(string $cin): static
     {
@@ -347,4 +343,18 @@ class TDemandeCab
 
         return $this;
     }
+
+    public function getVilleMission(): ?string
+    {
+        return $this->ville_mission;
+    }
+
+    public function setVilleMission(string $ville_mission): static
+    {
+        $this->ville_mission = $ville_mission;
+
+        return $this;
+    }
+
+    
 }

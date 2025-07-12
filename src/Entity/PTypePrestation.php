@@ -24,14 +24,7 @@ class PTypePrestation
     #[ORM\ManyToOne(inversedBy: 'pTypePrestations')]
     private ?User $user_created_id = null;
 
-    #[ORM\OneToMany(mappedBy: 'type_prestation_id', targetEntity: PPrestation::class)]
-    private Collection $zone_id;
-
-    public function __construct()
-    {
-        $this->zone_id = new ArrayCollection();
-    }
-
+ 
     public function getId(): ?int
     {
         return $this->id;
@@ -73,33 +66,5 @@ class PTypePrestation
         return $this;
     }
 
-    /**
-     * @return Collection<int, PPrestation>
-     */
-    public function getZoneId(): Collection
-    {
-        return $this->zone_id;
-    }
-
-    public function addZoneId(PPrestation $zoneId): static
-    {
-        if (!$this->zone_id->contains($zoneId)) {
-            $this->zone_id->add($zoneId);
-            $zoneId->setTypePrestationId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeZoneId(PPrestation $zoneId): static
-    {
-        if ($this->zone_id->removeElement($zoneId)) {
-            // set the owning side to null (unless already changed)
-            if ($zoneId->getTypePrestationId() === $this) {
-                $zoneId->setTypePrestationId(null);
-            }
-        }
-
-        return $this;
-    }
+   
 }

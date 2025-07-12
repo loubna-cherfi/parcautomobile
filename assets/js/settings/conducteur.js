@@ -4,7 +4,7 @@ $(document).ready(function () {
 
     // Initialize DataTable
     initDataTable();
-
+   
     function initDataTable() {
         $('#conducteurTable').DataTable({
             lengthMenu: [
@@ -54,5 +54,65 @@ $(document).ready(function () {
         }
     });
 });
+$(document).on('click', '.saveUpdateConducteur', function (e) {
+     e.preventDefault(); 
+    let data = {
+        id: $('#idConducteur').val(),
+        nom: $('#nomUpd').val(),
+        prenom: $('#prenomUpd').val(),
+        cin: $('#cinUpd').val(),
+        permisNumero: $('#permisNumeroUpd').val(),
+        permisType: $('#permisTypeUpd').val(),
+        telephone: $('#telephoneUpd').val(),
+        email: $('#emailUpd').val(),
+        adresse: $('#adresseUpd').val(),
+        status: $('input[name="statusupd"]:checked').val()
+    };
+
+    $.post('/conducteur/updateConducteur', data, function (response) {
+        toastr.success(response.success);
+        location.reload(); // ou recharger la DataTable
+    }).fail(function (xhr) {
+        toastr.error("Erreur lors de la modification");
+    });
+});
+$(document).on('click', '.btnToggleStatusConducteur', function () {
+    let id = $(this).data('id');
+
+    $.post('/conducteur/toggleConducteur/' + id, function (response) {
+        toastr.success(response.success);
+        location.reload(); // ou mise à jour du DOM si tu préfères
+    }).fail(function (xhr) {
+        toastr.error("Erreur lors du changement de statut");
+    });
+});
+$(document).on('click', '.saveAddConducteur', function (e) {
+    e.preventDefault();
+
+let data = {
+    nom: $('#nom').val(),
+    prenom: $('#prenom').val(),
+    cin: $('#cin').val(),
+    permisNumero: $('#permisNumero').val(),
+    permisType: $('#permisType').val(),
+    telephone: $('#telephone').val(),
+    email: $('#email').val(),
+    adresse: $('#adresse').val(),
+    permisDateObtention: $('#permisDateObtention').val(),
+    dateNaissance: $('#dateNaissance').val(),
+    status: $('input[name="status"]:checked').val()
+};
+
+
+    $.post('/conducteur/addConducteur', data, function (response) {
+        toastr.success(response.success);
+        $('#addConducteur').modal('hide');
+        location.reload(); // ou reload DataTable si tu veux éviter le rechargement complet
+    }).fail(function (xhr) {
+        toastr.error("Erreur lors de l'ajout du conducteur");
+        console.error(xhr.responseText);
+    });
+});
+
 
         });

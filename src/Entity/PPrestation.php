@@ -45,6 +45,12 @@ class PPrestation
     #[ORM\OneToMany(mappedBy: 'prestation_id', targetEntity: TDemandeDet::class)]
     private Collection $tDemandeDets;
 
+    #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
+    private ?PZone $zone_id = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $tarifWeekEnd = null;
+
     public function __construct()
     {
         $this->tDemandeDets = new ArrayCollection();
@@ -185,6 +191,30 @@ class PPrestation
                 $tDemandeDet->setPrestationId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getZoneId(): ?PZone
+    {
+        return $this->zone_id;
+    }
+
+    public function setZoneId(?PZone $zone_id): static
+    {
+        $this->zone_id = $zone_id;
+
+        return $this;
+    }
+
+    public function getTarifWeekEnd(): ?float
+    {
+        return $this->tarifWeekEnd;
+    }
+
+    public function setTarifWeekEnd(float $tarifWeekEnd): static
+    {
+        $this->tarifWeekEnd = $tarifWeekEnd;
 
         return $this;
     }

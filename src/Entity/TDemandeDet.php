@@ -19,20 +19,19 @@ class TDemandeDet
     #[ORM\ManyToOne(inversedBy: 'tDemandeDets')]
     private ?TDemandeCab $demande_id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable:true)]
     private ?string $lieu = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE,nullable:true)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[ORM\Column(type: Types::TIME_MUTABLE,nullable:true)]
     private ?\DateTimeInterface $heure = null;
 
     #[ORM\Column]
     private ?float $tarif = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $ville = null;
+  
 
     #[ORM\ManyToOne(inversedBy: 'tDemandeDets')]
     private ?PPrestation $prestation_id = null;
@@ -43,8 +42,34 @@ class TDemandeDet
     #[ORM\ManyToOne(inversedBy: 'tDemandeDets')]
     private ?PConducteur $conducteur_id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tDemandeDets')]
-    private ?PZone $zone_id = null;
+    #[ORM\Column(length: 255,nullable:true)]
+    private ?string $adressDepart = null;
+
+    #[ORM\Column(length: 255)]
+    private ?int $nbjour = null;
+
+    #[ORM\Column]
+    private ?int $quantite = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,nullable:true)]
+    private ?\DateTimeInterface $dateDemande = null;
+
+    #[ORM\Column(nullable:true)]
+    private ?bool $majWeekend = null;
+
+    #[ORM\Column(nullable:true)]
+    private ?bool $majNuit = null;
+
+    #[ORM\Column(nullable:true)]
+    private ?float $carburant = null;
+
+    #[ORM\Column(nullable:true)]
+    private ?float $jawaz = null;
+
+    #[ORM\Column(nullable:true)]
+    private ?int $kmDepart = null;
+
+
 
    
 
@@ -118,18 +143,8 @@ class TDemandeDet
         return $this;
     }
 
-    public function getVille(): ?string
-    {
-        return $this->ville;
-    }
 
-    public function setVille(string $ville): static
-    {
-        $this->ville = $ville;
-
-        return $this;
-    }
-
+  
     /**
      * @return Collection<int, PPrestation>
      */
@@ -172,21 +187,115 @@ class TDemandeDet
         return $this;
     }
 
-    public function getZoneId(): ?PZone
+    public function getAdressDepart(): ?string
     {
-        return $this->zone_id;
+        return $this->adressDepart;
     }
 
-    public function setZoneId(?PZone $zone_id): static
+    public function setAdressDepart(string $adressDepart): static
     {
-        $this->zone_id = $zone_id;
+        $this->adressDepart = $adressDepart;
+
+        return $this;
+    }
+
+    public function getNbjour(): ?int
+    {
+        return $this->nbjour;
+    }
+
+    public function setNbjour(int $nbjour): static
+    {
+        $this->nbjour = $nbjour;
 
         return $this;
     }
 
   
+    public function getQuantite(): ?int
+    {
+        return $this->quantite;
+    }
 
-  
+    public function setQuantite(int $quantite): static
+    {
+        $this->quantite = $quantite;
 
+        return $this;
+    }
+
+    public function getDateDemande(): ?\DateTimeInterface
+    {
+        return $this->dateDemande;
+    }
+
+    public function setDateDemande(\DateTimeInterface $dateDemande): static
+    {
+        $this->dateDemande = $dateDemande;
+
+        return $this;
+    }
+
+    public function isMajWeekend(): ?bool
+    {
+        return $this->majWeekend;
+    }
+
+    public function setMajWeekend(bool $majWeekend): static
+    {
+        $this->majWeekend = $majWeekend;
+
+        return $this;
+    }
+
+    public function isMajNuit(): ?bool
+    {
+        return $this->majNuit;
+    }
+
+    public function setMajNuit(bool $majNuit): static
+    {
+        $this->majNuit = $majNuit;
+
+        return $this;
+    }
+
+    public function getCarburant(): ?float
+    {
+        return $this->carburant;
+    }
+
+    public function setCarburant(float $carburant): static
+    {
+        $this->carburant = $carburant;
+
+        return $this;
+    }
+
+    public function getJawaz(): ?float
+    {
+        return $this->jawaz;
+    }
+
+    public function setJawaz(float $jawaz): static
+    {
+        $this->jawaz = $jawaz;
+
+        return $this;
+    }
+
+    public function getKmDepart(): ?int
+    {
+        return $this->kmDepart;
+    }
+
+    public function setKmDepart(int $kmDepart): static
+    {
+        $this->kmDepart = $kmDepart;
+
+        return $this;
+    }
+
+   
   
 }

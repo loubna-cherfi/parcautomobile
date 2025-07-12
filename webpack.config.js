@@ -31,6 +31,7 @@ Encore
   .addStyleEntry("siteStyle", "./assets/styles/site.scss")
   .addStyleEntry("listModulesStyle", "./assets/styles/listModules.scss")
   .addStyleEntry("choix_site", "./assets/styles/choix_site.scss")
+  .addStyleEntry("mission", "./assets/styles/mission.scss")
 
 
   .addEntry("app", "./assets/app.js")
@@ -47,6 +48,7 @@ Encore
   .addEntry("settings_vehicule", "./assets/js/settings/vehicule.js")
   .addEntry("settings_conducteur", "./assets/js/settings/conducteur.js")
   .addEntry("settings_demande", "./assets/js/settings/demande.js")
+  .addEntry("settings_mission", "./assets/js/settings/mission.js")
 
 
 
