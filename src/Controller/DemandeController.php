@@ -169,7 +169,7 @@ class DemandeController extends AbstractController
 public function ajouterDemande(Request $request, EntityManagerInterface $em, TarifCalculator $tarifCalculator): RedirectResponse
 {
     $data = $request->request->all();
-// dd($data);
+    // dd($data);
     $demande = new TDemandeCab();
     $demande->setNomBenificiaire($data['nomBenificiaire'] ?? null);
     $demande->setCin($data['cin'] ?? null);
@@ -178,7 +178,7 @@ public function ajouterDemande(Request $request, EntityManagerInterface $em, Tar
     $demande->setObservation($data['observation'] ?? null);
     $demande->setDescription($data['description'] ?? null);
     $demande->setDateDemande(new \DateTime($data['dateDemande'] ?? 'now'));
-    // $demande->setVilleMission($data['villeMission'] ?? null);
+    $demande->setAdressDepart($data['adressDepart'] ?? null);
     $demande->setActive(1);
 
     $details = [];
@@ -211,6 +211,7 @@ public function ajouterDemande(Request $request, EntityManagerInterface $em, Tar
             $detailDemande->setNbjour($nbJours);
             $detailDemande->setTarif($tarif);
             $detailDemande->setDemandeId($demande);
+            
 
             $totalTarif += $tarif;
             $details[] = $detailDemande;

@@ -35,7 +35,7 @@
                         <th>Contact</th>
                         <th>CIN</th>
                         <th>Nomber personnes</th>
-                        <th>Ville mission</th>
+                        <th>Adresse de depart</th>
                         <th>Tarif total</th>
                          <th>Description</th>
                         <th>observation</th>
@@ -64,7 +64,7 @@
                                 <td>{{ demande.contact }}</td>
                                 <td>{{ demande.cin }}</td>
                                 <td>{{ demande.nbPersonnes }}</td>
-                                <td>{{ demande.villeMission }}</td>
+                                <td>{{ demande.adressdepart }}</td>
                                 <td>{{ demande.tarifTotal }}</td>
                                 <td>{{ demande.description }}</td>
                                 <td>{{ demande.observation }}</td>
@@ -172,6 +172,7 @@
   <div class="modal-dialog" style="width: 90%;" role="document">
     <div class="modal-content d-flex flex-column h-100">
       <form id="formAddDemande" method="POST" action="{{ path('demande_ajouter') }}">
+
         <div class="modal-header">
           <h5 class="modal-title text-primary">AJOUTER UNE NOUVELLE DEMANDE</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeAddDemande">
@@ -217,6 +218,9 @@
        
         <div class="col-md-6 mb-2">
           <input type="datetime-local" name="dateDemande" class="form-control form-control-sm" required>
+        </div>
+         <div class="col-md-6 mb-2">
+          <input type="text" name="adressDepart" class="form-control form-control-sm" placeholder="Adresse de depart" required>
         </div>
       </div>
     </div>
@@ -277,6 +281,8 @@
           <input type="number" name="details[0][nb_jours]" class="form-control form-control-sm" placeholder="Nombre de jours">
         </div>
       </div>
+ 
+
 
       <div class="text-right">
         <button type="button" class="btn btn-outline-primary btn-sm" id="add-detail">
