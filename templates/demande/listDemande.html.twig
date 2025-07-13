@@ -302,10 +302,10 @@
           <th>Conducteur</th>
           <th>Type prestation</th>
           <th>Zone</th>
-          <th>Prestation</th>
+          {# <th>Prestation</th> #}
           <th>Quantité</th>
           <th>Jours</th>
-          <th>Tarif</th>
+          {# <th>Tarif</th> #}
           <th>Action</th>
         </tr>
       </thead>
@@ -325,94 +325,96 @@
   </div>
 </div>
 
-<!-- MODAL Traiter une demande -->
-<div class="modal right fade" id="traiterDemande" tabindex="-1" role="dialog" aria-labelledby="traiterDemandeLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <form id="formTraiterDemande" method="POST" action="">
-        <input type="hidden" name="id" id="traiter-idDemande">
 
+
+
+
+<!-- MODAL TRAITER UNE DEMANDE -->
+<div class="modal right fade" id="traiterDemande" tabindex="-1" role="dialog" aria-labelledby="traiterDemandeLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 90%;" role="document">
+    <div class="modal-content d-flex flex-column h-100">
+   
+      <form id="formTraiterDemande" method="POST" action="">
+
+        
         <div class="modal-header">
-          <h5 class="modal-title text-primary">TRAITEMENT DE LA DEMANDE</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+          <h5 class="modal-title text-primary">TRAITER LA DEMANDE</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeTraiterDemande">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
 
         <div class="modal-body">
-          <!-- Partie haute : Infos générales -->
-          <h5 class="text-primary">Informations générales</h5>
-        <div class="row mb-3">
-  <div class="col-md-3">
-    <label for="update-nomBenificiaire">Nom bénéficiaire</label>
-    <input type="text" name="nomBenificiaire" id="update-nomBenificiaire" class="form-control" readonly>
-  </div>
-  <div class="col-md-3">
-    <label for="update-cin">CIN</label>
-    <input type="text" name="cin" id="update-cin" class="form-control" readonly>
-  </div>
-  <div class="col-md-3">
-    <label for="update-contact">Contact</label>
-    <input type="text" name="contact" id="update-contact" class="form-control" readonly>
-  </div>
-  <div class="col-md-3">
-    <label for="update-dateDemande">Date de la demande</label>
-    <input type="date" name="dateDemande" id="update-dateDemande" class="form-control" readonly>
-  </div>
-</div>
+          <!-- 🔹 Informations générales -->
+           <h5 class="text-primary">Informations générales</h5>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <input type="hidden" name="id" id="traiter-id">
+              <input type="text" name="nomBenificiaire" id="traiter-nom" class="form-control form-control-sm" placeholder="Nom du bénéficiaire" required>
+            </div>
+            <div class="col-md-6 mb-2">
+              <input type="text" name="cin" id="traiter-cin" class="form-control form-control-sm" placeholder="CIN">
+            </div>
+            <div class="col-md-6 mb-2">
+              <input type="text" name="observation" id="traiter-observation" class="form-control form-control-sm" placeholder="Observation">
+            </div>
+            <div class="col-md-6 mb-2">
+              <input type="text" name="description" id="traiter-description" class="form-control form-control-sm" placeholder="Description">
+            </div>
+            <div class="col-md-6 mb-2">
+              <input type="text" name="contact" id="traiter-contact" class="form-control form-control-sm" placeholder="Contact">
+            </div>
+            <div class="col-md-6 mb-2">
+              <input type="number" name="nbPersonnes" id="traiter-nbPersonnes" class="form-control form-control-sm" placeholder="Nombre de personnes">
+            </div>
+            <div class="col-md-6 mb-2">
+              <input type="datetime-local" name="dateDemande" id="traiter-date" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-md-6 mb-2">
+              <input type="text" name="adressDepart" id="traiter-adresse" class="form-control form-control-sm" placeholder="Adresse de départ" required>
+            </div>
+          </div>
 
-<div class="row mb-3">
-  <div class="col-md-3">
-    <label for="update-nbPersonnes">Nombre de personnes</label>
-    <input type="number" name="nbPersonnes" id="update-nbPersonnes" class="form-control" readonly>
-  </div>
-  <div class="col-md-3">
-    <label for="update-observation">Observation</label>
-    <input type="text" name="observation" id="update-observation" class="form-control" readonly>
-  </div>
-  <div class="col-md-3">
-    <label for="update-description">Description</label>
-    <input type="text" name="description" id="update-description" class="form-control" readonly>
-  </div>
-</div>
-
-
-
-          <hr>
-  
-
-          <!-- Partie basse : Tableau dynamique -->
-          <h5 class="text-primary">Détails de la demande</h5>
+          <!-- 🔸 Tableau des détails -->
+          <h5 class="text-primary mt-3">Détails de la demande</h5>
           <div class="table-responsive">
-            <table class="table table-bordered" id="detailsTable">
-              <thead>
+            <table class="table table-bordered table-sm" id="traiter-details-table">
+              <thead class="thead-light">
                 <tr>
                   <th>#</th>
-                  <th>Lieu</th>
-                  <th>Ville</th>
-                  <th>Heure</th>
-                  <th>Conducteur</th>
                   <th>Véhicule</th>
-                  <th>Type prestation</th>
+                  <th>Conducteur</th>
+                  <th>Type</th>
+                  <th>Zone</th>
                   <th>Prestation</th>
-                  <th>Tarif</th>
+                  <th>Quantité</th>
+                  <th>Jours</th>
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody id="detailsTraiterBody">
-                <!-- Rempli dynamiquement par JavaScript -->
+              <tbody>
+                <!-- Les lignes seront ajoutées dynamiquement via JS -->
               </tbody>
             </table>
           </div>
         </div>
 
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Enregistrer</button>
+        <div class="modal-footer mt-auto d-flex justify-content-end">
+          <button type="submit" class="btn btn-success btn-sm">
+            <i class="fa fa-check"></i> Valider
+          </button>
+          <button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Annuler</button>
         </div>
       </form>
     </div>
   </div>
 </div>
+
+
+
+
+
+
 <!-- MODAL MODIFIER UN DÉTAIL -->
 <div class="modal right fade"id="modifierDetailModal"  role="dialog" tabindex="-1" aria-labelledby="modifierDetailModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-xl" role="document">
@@ -490,10 +492,11 @@
               <label for="modifier-heure">Heure</label>
               <input type="time" class="form-control" id="modifier-heure" name="heure">
             </div>
-            <div class="col-md-3">
-              <label for="modifier-tarif">Tarif</label>
-              <input type="number" class="form-control" id="modifier-tarif" name="tarif">
-            </div>
+         <div class="col-md-3">
+  <label for="modifier-tarif">Tarif</label>
+  <input type="number" class="form-control" id="modifier-tarif" name="tarif" readonly>
+</div>
+
           </div>
         </div>
 

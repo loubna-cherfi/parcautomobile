@@ -4,9 +4,10 @@
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/738.8dac8cdc.js",
-        "/build/193.0218dc93.js",
+        "/build/937.e155237c.js",
+        "/build/474.95ad4da6.js",
         "/build/622.d1e69617.js",
-        "/build/app.3a524737.js"
+        "/build/app.61bb412c.js"
       ],
       "css": [
         "/build/622.4d445ace.css",
@@ -24,18 +25,20 @@
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/738.8dac8cdc.js",
-        "/build/193.0218dc93.js",
+        "/build/937.e155237c.js",
+        "/build/474.95ad4da6.js",
         "/build/902.48947e83.js",
-        "/build/setting_module.7c62019d.js"
+        "/build/setting_module.e642b326.js"
       ]
     },
     "setting_sub_module": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/738.8dac8cdc.js",
-        "/build/193.0218dc93.js",
+        "/build/937.e155237c.js",
+        "/build/474.95ad4da6.js",
         "/build/902.48947e83.js",
-        "/build/setting_sub_module.f91630ab.js"
+        "/build/setting_sub_module.d7e23446.js"
       ]
     },
     "setting_action": {
@@ -48,8 +51,9 @@
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/738.8dac8cdc.js",
-        "/build/193.0218dc93.js",
-        "/build/setting_user_affectation.48febd35.js"
+        "/build/937.e155237c.js",
+        "/build/474.95ad4da6.js",
+        "/build/setting_user_affectation.dbc97055.js"
       ]
     },
     "setting_profile": {
@@ -82,7 +86,8 @@
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/738.8dac8cdc.js",
-        "/build/settings_demande.f7699a2b.js"
+        "/build/937.e155237c.js",
+        "/build/settings_demande.ac8c170d.js"
       ]
     },
     "settings_mission": {
