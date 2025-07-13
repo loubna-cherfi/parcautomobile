@@ -169,31 +169,34 @@ $(document).ready(function () {
       const tbody = $('#traiter-details-table tbody');
       tbody.empty();
 
-      data.details.forEach((d, i) => {
-  tbody.append(`
-    <tr>
-      <td>${i + 1}</td>
-      <td>${d.vehicule}</td>
-      <td>${d.conducteur}</td>
-      <td>${d.type_prestation}</td>
-      <td>${d.zone}</td>
-      <td>${d.prestation}</td>
-      <td>${d.quantite}</td>
-      <td>${d.nb_jours}</td>
-      <td>
-        <div class="dropdown">
-          <button class="btn  btn-sm dropdown" type="button" data-toggle="dropdown">
-            <i class="fa-solid fa-ellipsis-vertical"></i>
-          </button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item btnEditDetail" href="#" data-index="${i}"><i class="fa fa-edit"></i> Modifier</a>
-          
-          </div>
-        </div>
-      </td>
-    </tr>
-  `);
-});
+       data.details.forEach((d, i) => {
+        tbody.append(`
+          <tr>
+            <td>${i + 1}</td>
+            <td>${d.vehicule}</td>
+            <td>${d.conducteur}</td>
+            <td>${d.type_prestation}</td>
+            <td>${d.zone}</td>
+            <td>${d.prestation}</td>
+            <td>${d.quantite}</td>
+            <td>${d.nb_jours}</td>
+            <td></td>
+           <td>
+                <div class="dropdown">
+                  <button class="btn btn-sm" type="button" id="dropdownMenuButton${d.id}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 30px; height: 30px; padding: 0;">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton${d.id}">
+                    <button type="button" class="dropdown-item btnModifierDetail" data-id="${d.id}">
+                      <i class="fa-solid fa-pen-to-square"></i> Modifier
+                    </button>
+                  </div>
+                </div>
+              </td>
+          </tr>
+        `);
+      });
+
 
 
       $('#traiterDemande').modal('show');
@@ -203,4 +206,20 @@ $(document).ready(function () {
     }
   });
 });
+ // ✏️ Gérer le clic sur "Modifier" depuis la liste des détails
+  $(document).on('click', '.btnModifierDetail', function () {
+    const detailId = $(this).data('id');
+    const $row = $(this).closest('tr');
+
+    $('#detail-id').val(detailId);
+    $('#edit-vehicule').val($row.find('td:eq(1)').text().trim());
+    $('#edit-conducteur').val($row.find('td:eq(2)').text().trim());
+    $('#edit-type').val($row.find('td:eq(3)').text().trim());
+    $('#edit-zone').val($row.find('td:eq(4)').text().trim());
+    $('#edit-prestation').val($row.find('td:eq(5)').text().trim());
+    $('#edit-quantite').val($row.find('td:eq(6)').text().trim());
+    $('#edit-jours').val($row.find('td:eq(7)').text().trim());
+
+    $('#modifierDetailModal').modal('show');
+  });
 });

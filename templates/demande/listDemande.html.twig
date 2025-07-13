@@ -167,7 +167,10 @@
   </script>
 {% endfor %}
 
-<!-- MODAL AJOUTER UNE DEMANDE -->
+
+
+
+<!-- MODAL AJOUTER UNE DEMANDE --> 
 <div class="modal right fade" id="addDemande" tabindex="-1" role="dialog" aria-labelledby="addDemandeLabel" aria-hidden="true">
   <div class="modal-dialog" style="width: 90%;" role="document">
     <div class="modal-content d-flex flex-column h-100">
@@ -180,139 +183,133 @@
           </button>
         </div>
 
-      <div class="modal-body">
-  <div class="row">
-    <!-- 🔹 Section 1 : Informations générales -->
-    <div class="col-md-6">
-      <h5 class="text-secondary">Informations générales</h5>
+        <div class="modal-body">
+          <div class="row">
+            <!-- Informations générales -->
+            <div class="col-md-6">
+              <h5 class="text-secondary">Informations générales</h5>
 
-      <div class="form-row">
-        <div class="col-md-6 mb-2">
-          <input type="text" name="nomBenificiaire" class="form-control form-control-sm" placeholder="Nom du bénéficiaire" required>
-        </div>
-        <div class="col-md-6 mb-2">
-          <input type="text" name="cin" class="form-control form-control-sm" placeholder="CIN">
-        </div>
-      </div>
+              <div class="form-row">
+                <div class="col-md-6 mb-2">
+                  <input type="text" name="nomBenificiaire" class="form-control form-control-sm" placeholder="Nom du bénéficiaire" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <input type="text" name="cin" class="form-control form-control-sm" placeholder="CIN">
+                </div>
+              </div>
 
-   
+              <div class="form-row">
+                <div class="col-md-6 mb-2">
+                  <input type="text" name="observation" class="form-control form-control-sm" placeholder="Observation">
+                </div>
+                <div class="col-md-6 mb-2">
+                  <input type="text" name="description" class="form-control form-control-sm" placeholder="Description">
+                </div>
+              </div>
 
-      <div class="form-row">
-        <div class="col-md-6 mb-2">
-          <input type="text" name="observation" class="form-control form-control-sm" placeholder="Observation">
-        </div>
-        <div class="col-md-6 mb-2">
-          <input type="text" name="description" class="form-control form-control-sm" placeholder="Description">
-        </div>
-      </div>
+              <div class="form-row">
+                <div class="col-md-6 mb-2">
+                  <input type="text" name="contact" class="form-control form-control-sm" placeholder="Contact">
+                </div>
+                <div class="col-md-6 mb-2">
+                  <input type="number" name="nbPersonnes" class="form-control form-control-sm" placeholder="Nombre de personnes">
+                </div>
+              </div>
 
-      <div class="form-row">
-        <div class="col-md-6 mb-2">
-          <input type="text" name="contact" class="form-control form-control-sm" placeholder="Contact">
-        </div>
-       <div class="col-md-6 mb-2">
-          <input type="number" name="nbPersonnes" class="form-control form-control-sm" placeholder="Nombre de personnes">
-        </div>
-      </div>
-         <div class="form-row">
-       
-        <div class="col-md-6 mb-2">
-          <input type="datetime-local" name="dateDemande" class="form-control form-control-sm" required>
-        </div>
-         <div class="col-md-6 mb-2">
-          <input type="text" name="adressDepart" class="form-control form-control-sm" placeholder="Adresse de depart" required>
-        </div>
-      </div>
-    </div>
+              <div class="form-row">
+                <div class="col-md-6 mb-2">
+                  <input type="datetime-local" name="dateDemande" class="form-control form-control-sm" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <input type="text" name="adressDepart" class="form-control form-control-sm" placeholder="Adresse de départ" required>
+                </div>
+              </div>
+            </div>
 
-    <!-- 🔸 Section 2 : Détails -->
-    <div class="col-md-6">
-      <h5 class="text-secondary">Détails de la demande</h5>
+            <!-- Détails -->
+            <div class="col-md-6">
+              <h5 class="text-secondary">Détails de la demande</h5>
 
-      <div class="form-row">
-        <div class="col-md-6 mb-2">
-          <select name="details[0][vehicule]" class="form-control form-control-sm">
-            <option value="">Véhicule</option>
-            {% for vehicule in vehicules %}
-              <option value="{{ vehicule.id }}">{{ vehicule.matricule }}</option>
-            {% endfor %}
-          </select>
+              <div class="form-row">
+                <div class="col-md-6 mb-2">
+                  <select name="details[0][vehicule]" class="form-control form-control-sm">
+                    <option value="">Véhicule</option>
+                    {% for vehicule in vehicules %}
+                      <option value="{{ vehicule.id }}">{{ vehicule.matricule }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <select name="details[0][conducteur]" class="form-control form-control-sm">
+                    <option value="">Conducteur</option>
+                    {% for conducteur in conducteurs %}
+                      <option value="{{ conducteur.id }}">{{ conducteur.nom }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="col-md-6 mb-2">
+                  <select name="details[0][type_prestation]" class="form-control form-control-sm" id="add-type-prestation">
+                    <option value="">Type de prestation</option>
+                    {% for type in typePrestations %}
+                      <option value="{{ type.id }}">{{ type.libelle }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <select name="details[0][zone]" class="form-control form-control-sm" id="add-zone">
+                    <option value="">Zone</option>
+                    {% for zone in zones %}
+                      <option value="{{ zone.id }}">{{ zone.libelle }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group mb-2">
+                <select name="details[0][prestation]" class="form-control form-control-sm" id="add-prestation-0">
+                  <option value="">Prestation</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="col-md-6 mb-2">
+                  <input type="number" name="details[0][quantite]" class="form-control form-control-sm" placeholder="Quantité">
+                </div>
+                <div class="col-md-6 mb-2">
+                  <input type="number" name="details[0][nb_jours]" class="form-control form-control-sm" placeholder="Nombre de jours">
+                </div>
+              </div>
+
+              <div class="text-right">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="add-detail">
+                  <i class="fa fa-plus"></i> Ajouter un détail
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tableau des détails (sans tarif) -->
+          <div class="mt-3" id="table-details-container" style="display: none;">
+            <table class="table table-sm table-bordered" id="table-details">
+              <thead class="thead-light">
+                <tr>
+                  <th>#</th>
+                  <th>Véhicule</th>
+                  <th>Conducteur</th>
+                  <th>Type prestation</th>
+                  <th>Zone</th>
+                  <th>Quantité</th>
+                  <th>Jours</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
-        <div class="col-md-6 mb-2">
-          <select name="details[0][conducteur]" class="form-control form-control-sm">
-            <option value="">Conducteur</option>
-            {% for conducteur in conducteurs %}
-              <option value="{{ conducteur.id }}">{{ conducteur.nom }}</option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="col-md-6 mb-2">
-          <select name="details[0][type_prestation]" class="form-control form-control-sm" id="add-type-prestation">
-            <option value="">Type de prestation</option>
-            {% for type in typePrestations %}
-              <option value="{{ type.id }}">{{ type.libelle }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-6 mb-2">
-          <select name="details[0][zone]" class="form-control form-control-sm" id="add-zone">
-            <option value="">Zone</option>
-            {% for zone in zones %}
-              <option value="{{ zone.id }}">{{ zone.libelle }}</option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group mb-2">
-        <select name="details[0][prestation]" class="form-control form-control-sm" id="add-prestation-0">
-          <option value="">Prestation</option>
-        </select>
-      </div>
-
-      <div class="form-row">
-        <div class="col-md-6 mb-2">
-          <input type="number" name="details[0][quantite]" class="form-control form-control-sm" placeholder="Quantité">
-        </div>
-        <div class="col-md-6 mb-2">
-          <input type="number" name="details[0][nb_jours]" class="form-control form-control-sm" placeholder="Nombre de jours">
-        </div>
-      </div>
- 
-
-
-      <div class="text-right">
-        <button type="button" class="btn btn-outline-primary btn-sm" id="add-detail">
-          <i class="fa fa-plus"></i> Ajouter un détail
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 🔽 Tableau caché au départ -->
-  <div class="mt-3" id="table-details-container" style="display: none;">
-    <table class="table table-sm table-bordered" id="table-details">
-      <thead class="thead-light">
-        <tr>
-          <th>#</th>
-          <th>Véhicule</th>
-          <th>Conducteur</th>
-          <th>Type prestation</th>
-          <th>Zone</th>
-          {# <th>Prestation</th> #}
-          <th>Quantité</th>
-          <th>Jours</th>
-          {# <th>Tarif</th> #}
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>   
-</div>
 
         <div class="modal-footer mt-auto d-flex justify-content-end">
           <button type="submit" class="btn btn-primary btn-sm">
@@ -324,6 +321,7 @@
     </div>
   </div>
 </div>
+
 
 
 
@@ -389,6 +387,7 @@
                   <th>Prestation</th>
                   <th>Quantité</th>
                   <th>Jours</th>
+                  <th>Tarif</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -400,8 +399,8 @@
         </div>
 
         <div class="modal-footer mt-auto d-flex justify-content-end">
-          <button type="submit" class="btn btn-success btn-sm">
-            <i class="fa fa-check"></i> Valider
+           <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fa-regular fa-floppy-disk"></i> Enregistrer
           </button>
           <button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Annuler</button>
         </div>
@@ -410,104 +409,76 @@
   </div>
 </div>
 
-
-
-
-
-
-<!-- MODAL MODIFIER UN DÉTAIL -->
-<div class="modal right fade"id="modifierDetailModal"  role="dialog" tabindex="-1" aria-labelledby="modifierDetailModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-xl" role="document">
+<!-- MODAL MODIFIER UN DETAIL -->
+<div class="modal right fade" id="modifierDetailModal" tabindex="-1" role="dialog" aria-labelledby="modifierDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-slideout" style="width: 40%;" role="document">
     <div class="modal-content">
       <form id="formModifierDetail">
-      <div class="modal-header">
-  <h5 class="modal-title text-primary">Modifier le détail</h5>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-
+        <div class="modal-header">
+          <h5 class="modal-title text-primary">Modifier Détail De La Demande </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="modal-body">
-          <input type="hidden" name="detailIndex" id="modifier-detail-index">
+          <input type="hidden" id="detail-id">
 
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="modifier-vehicule">Véhicule</label>
-              <select id="modifier-vehicule" name="vehicule" class="form-control">
-                {% for vehicule in vehicules %}
-                  <option value="{{ vehicule.id }}">{{ vehicule.matricule }}</option>
-                {% endfor %}
-              </select>
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label>Véhicule</label>
+              <input type="text" class="form-control" id="edit-vehicule"disabled>
             </div>
-            <div class="col-md-6">
-              <label for="modifier-conducteur">Conducteur</label>
-              <select id="modifier-conducteur" name="conducteur" class="form-control">
-                {% for conducteur in conducteurs %}
-                  <option value="{{ conducteur.id }}">{{ conducteur.nom }}</option>
-                {% endfor %}
-              </select>
+            <div class="form-group col-6">
+              <label>Conducteur</label>
+              <input type="text" class="form-control" id="edit-conducteur"disabled>
             </div>
           </div>
 
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="modifier-type-prestation">Type de prestation</label>
-              <select id="modifier-type-prestation" name="type_prestation" class="form-control">
-                {% for type in typePrestations %}
-                  <option value="{{ type.id }}">{{ type.libelle }}</option>
-                {% endfor %}
-              </select>
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label>Type</label>
+              <input type="text" class="form-control" id="edit-type"disabled>
             </div>
-            <div class="col-md-6">
-              <label for="modifier-prestation">Prestation</label>
-              <select id="modifier-prestation" name="prestation" class="form-control">
-                {% for prestation in prestations %}
-                  <option value="" data-type="">{{ prestation.nomPrestation }}</option>
-                {% endfor %}
-              </select>
+            <div class="form-group col-6">
+              <label>Zone</label>
+              <input type="text" class="form-control" id="edit-zone"disabled>
             </div>
           </div>
 
-          {# <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="modifier-zone">Zone</label>
-              <select id="modifier-zone" name="zone" class="form-control">
-               
-                  <option value=""></option>
-                
-              </select>
-            </div> #}
-            <div class="col-md-6">
-              <label for="modifier-lieu">Lieu</label>
-              <input type="text" class="form-control" id="modifier-lieu" name="lieu">
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label>Prestation</label>
+              <input type="text" class="form-control" id="edit-prestation"disabled>
+            </div>
+            <div class="form-group col-6">
+              <label>Quantité</label>
+              <input type="number" class="form-control" id="edit-quantite"disabled>
             </div>
           </div>
 
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="modifier-ville">Ville</label>
-              <input type="text" class="form-control" id="modifier-ville" name="ville">
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label>Nombre de jours</label>
+              <input type="number" class="form-control" id="edit-jours"disabled>
             </div>
-            <div class="col-md-3">
-              <label for="modifier-heure">Heure</label>
-              <input type="time" class="form-control" id="modifier-heure" name="heure">
+              <div class="form-group col-6">
+              <label>Kilometrage</label>
+              <input type="number" class="form-control" id="">
             </div>
-         <div class="col-md-3">
-  <label for="modifier-tarif">Tarif</label>
-  <input type="number" class="form-control" id="modifier-tarif" name="tarif" readonly>
-</div>
-
           </div>
         </div>
 
-      <div class="modal-footer d-flex justify-content-end">
-  <button type="submit" class="btn btn-primary">   <i class="fa-regular fa-floppy-disk"></i>Enregistrer</button>
-  <button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Fermer</button>
-</div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        </div>
       </form>
     </div>
   </div>
 </div>
+
+
+
 
 
 <script>

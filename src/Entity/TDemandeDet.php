@@ -28,7 +28,7 @@ class TDemandeDet
     #[ORM\Column(type: Types::TIME_MUTABLE,nullable:true)]
     private ?\DateTimeInterface $heure = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     private ?float $tarif = null;
 
   

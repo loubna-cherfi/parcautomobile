@@ -179,11 +179,12 @@ public function getDemande(int $id, EntityManagerInterface $em): JsonResponse
         return new JsonResponse($tarif);
     }
 
-   #[Route('/demande/ajouter', name: 'demande_ajouter', methods: ['POST'])]
-public function ajouterDemande(Request $request, EntityManagerInterface $em, TarifCalculator $tarifCalculator): RedirectResponse
+  
+#[Route('/demande/ajouter', name: 'demande_ajouter', methods: ['POST'])]
+public function ajouterDemande(Request $request, EntityManagerInterface $em): RedirectResponse
 {
     $data = $request->request->all();
-    // dd($data);
+
     $demande = new TDemandeCab();
     $demande->setNomBenificiaire($data['nomBenificiaire'] ?? null);
     $demande->setCin($data['cin'] ?? null);
@@ -196,9 +197,7 @@ public function ajouterDemande(Request $request, EntityManagerInterface $em, Tar
     $demande->setActive(1);
 
     $details = [];
-    $totalTarif = 0;
 
-   
     if (isset($data['details']) && is_array($data['details'])) {
         foreach ($data['details'] as $detail) {
             $vehicule = $em->getRepository(PVehicule::class)->find($detail['vehicule']);
@@ -213,9 +212,6 @@ public function ajouterDemande(Request $request, EntityManagerInterface $em, Tar
 
             $quantite = (int) ($detail['quantite'] ?? 0);
             $nbJours = (int) ($detail['nb_jours'] ?? 0);
-            $date = $demande->getDateDemande();
-
-            $tarif = $tarifCalculator->calculerTarif($prestation, $date, $quantite, $nbJours);
 
             $detailDemande = new TDemandeDet();
             $detailDemande->setVehiculeId($vehicule);
@@ -223,19 +219,18 @@ public function ajouterDemande(Request $request, EntityManagerInterface $em, Tar
             $detailDemande->setPrestationId($prestation);
             $detailDemande->setQuantite($quantite);
             $detailDemande->setNbjour($nbJours);
-            $detailDemande->setTarif($tarif);
             $detailDemande->setDemandeId($demande);
-            
 
-            $totalTarif += $tarif;
+          
+            // $detailDemande->setTarif(...);
+
             $details[] = $detailDemande;
         }
     }
 
-    // ✅ Définir le tarif total *avant* le flush
-    $demande->setTarifTotal($totalTarif);
+   
+    // $demande->setTarifTotal(...);
 
-    // ✅ Persister d'abord la demande, ensuite les détails
     $em->persist($demande);
     foreach ($details as $detail) {
         $em->persist($detail);
@@ -247,5 +242,72 @@ public function ajouterDemande(Request $request, EntityManagerInterface $em, Tar
 
     return $this->redirectToRoute('listDemandes');
 }
+
+
+
+
+
+#[Route('/traiter/enregistrer', name: 'demande_traiter_enregistrer', methods: ['POST'])]
+public function enregistrerTraitement(Request $request, EntityManagerInterface $em, TarifCalculator $tarifCalculator): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+
+    if (!$data || !isset($data['id']) || !isset($data['details'])) {
+        return $this->json(['error' => 'Données invalides'], 400);
+    }
+
+    $demande = $em->getRepository(TDemandeCab::class)->find($data['id']);
+    if (!$demande) {
+        return $this->json(['error' => 'Demande non trouvée'], 404);
+    }
+
+    // Supprimer les anciens détails
+    foreach ($demande->getTDemandeDets() as $oldDetail) {
+        $em->remove($oldDetail);
+    }
+    $em->flush(); // Flush pour bien supprimer avant de recréer
+
+    $totalTarif = 0;
+    foreach ($data['details'] as $detail) {
+        // Recherche entités nécessaires
+        $vehicule = $em->getRepository(PVehicule::class)->findOneBy(['matricule' => $detail['vehicule']]);
+        $conducteur = $em->getRepository(PConducteur::class)->findOneBy(['nom' => $detail['conducteur']]);
+        $typePrestation = $em->getRepository(PTypePrestation::class)->findOneBy(['libelle' => $detail['type_prestation']]);
+        $zone = $em->getRepository(PZone::class)->findOneBy(['libelle' => $detail['zone']]);
+        $prestation = $em->getRepository(PPrestation::class)->findOneBy(['nomPrestation' => $detail['prestation']]);
+
+        if (!$vehicule || !$conducteur || !$typePrestation || !$zone || !$prestation) {
+            // Optionnel : gérer les erreurs / continuer
+            continue;
+        }
+
+        $quantite = (int) ($detail['quantite'] ?? 0);
+        $nbJours = (int) ($detail['nb_jours'] ?? 0);
+        $date = $demande->getDateDemande();
+
+        $tarif = $tarifCalculator->calculerTarif($prestation, $date, $quantite, $nbJours);
+
+        $detailDemande = new TDemandeDet();
+        $detailDemande->setVehiculeId($vehicule);
+        $detailDemande->setConducteurId($conducteur);
+        $detailDemande->setPrestationId($prestation);
+        $detailDemande->setQuantite($quantite);
+        $detailDemande->setNbjour($nbJours);
+        $detailDemande->setTarif($tarif);
+        $detailDemande->setDemandeId($demande);
+
+        $em->persist($detailDemande);
+
+        $totalTarif += $tarif;
+    }
+
+    $demande->setTarifTotal($totalTarif);
+
+    $em->persist($demande);
+    $em->flush();
+
+    return $this->json(['success' => true, 'message' => 'Traitement enregistré avec succès', 'tarifTotal' => $totalTarif]);
+}
+
 
 }
