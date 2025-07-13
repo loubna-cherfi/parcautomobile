@@ -75,10 +75,8 @@ $(document).ready(function () {
             <td>${conducteur.text()}<input type="hidden" name="details[${detailIndex}][conducteur]" value="${conducteur.val()}"></td>
             <td>${typePrestation.text()}<input type="hidden" name="details[${detailIndex}][type_prestation]" value="${typePrestation.val()}"></td>
             <td>${zone.text()}<input type="hidden" name="details[${detailIndex}][zone]" value="${zone.val()}"></td>
-            <td>${prestation.text()}<input type="hidden" name="details[${detailIndex}][prestation]" value="${prestation.val()}"></td>
             <td>${quantite}<input type="hidden" name="details[${detailIndex}][quantite]" value="${quantite}"></td>
             <td>${nbJours}<input type="hidden" name="details[${detailIndex}][nb_jours]" value="${nbJours}"></td>
-            <td>${tarif.toFixed(2)}<input type="hidden" name="details[${detailIndex}][tarif]" value="${tarif.toFixed(2)}"></td>
             <td><button class="btn btn-sm btnRemoveDetail" type="button"><i class="fa fa-trash"></i></button></td>
           </tr>
         `);
@@ -147,4 +145,62 @@ $(document).ready(function () {
       e.preventDefault();
     }
   });
+
+
+  $(document).on('click', '.btnTraiterDemande', function () {
+  const demandeId = $(this).data('id');
+
+  $.ajax({
+    url: '/demande/ajax/get/' + demandeId,
+    method: 'GET',
+    success: function (data) {
+      // 🎯 Remplir infos générales
+      $('#traiter-id').val(data.id);
+      $('#traiter-nom').val(data.nomBenificiaire);
+      $('#traiter-cin').val(data.cin);
+      $('#traiter-observation').val(data.observation);
+      $('#traiter-description').val(data.description);
+      $('#traiter-contact').val(data.contact);
+      $('#traiter-nbPersonnes').val(data.nbPersonnes);
+      $('#traiter-date').val(data.dateDemande);
+      $('#traiter-adresse').val(data.adressDepart);
+
+      // 🧾 Remplir le tableau des détails
+      const tbody = $('#traiter-details-table tbody');
+      tbody.empty();
+
+      data.details.forEach((d, i) => {
+  tbody.append(`
+    <tr>
+      <td>${i + 1}</td>
+      <td>${d.vehicule}</td>
+      <td>${d.conducteur}</td>
+      <td>${d.type_prestation}</td>
+      <td>${d.zone}</td>
+      <td>${d.prestation}</td>
+      <td>${d.quantite}</td>
+      <td>${d.nb_jours}</td>
+      <td>
+        <div class="dropdown">
+          <button class="btn  btn-sm dropdown" type="button" data-toggle="dropdown">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item btnEditDetail" href="#" data-index="${i}"><i class="fa fa-edit"></i> Modifier</a>
+          
+          </div>
+        </div>
+      </td>
+    </tr>
+  `);
+});
+
+
+      $('#traiterDemande').modal('show');
+    },
+    error: function () {
+      alert("Erreur lors du chargement de la demande.");
+    }
+  });
+});
 });

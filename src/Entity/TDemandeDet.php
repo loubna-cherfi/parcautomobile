@@ -67,7 +67,7 @@ class TDemandeDet
     private ?float $jawaz = null;
 
     #[ORM\Column(nullable:true)]
-    private ?int $kmDepart = null;
+    private ?int $kilometrage = null;
 
 
 
@@ -284,14 +284,14 @@ class TDemandeDet
         return $this;
     }
 
-    public function getKmDepart(): ?int
+    public function getKilometrage(): ?int
     {
-        return $this->kmDepart;
+        return $this->kilometrage;
     }
 
-    public function setKmDepart(int $kmDepart): static
+    public function setKilometrage(int $kilometrage): static
     {
-        $this->kmDepart = $kmDepart;
+        $this->kilometrage = $kilometrage;
 
         return $this;
     }

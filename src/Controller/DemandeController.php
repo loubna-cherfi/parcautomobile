@@ -82,27 +82,41 @@ class DemandeController extends AbstractController
         
     }
 
-    #[Route('/demandefind/get/{id}', name: 'get_demande', methods: ['GET'])]
-    public function getDemande(int $id, EntityManagerInterface $em): JsonResponse
-    {
-        $demande = $em->getRepository(TDemandeCab::class)->find($id);
+   #[Route('/ajax/get/{id}', name: 'get_demande', methods: ['GET'])]
+public function getDemande(int $id, EntityManagerInterface $em): JsonResponse
+{
+    $demande = $em->getRepository(TDemandeCab::class)->find($id);
 
-        if (!$demande) {
-            return new JsonResponse(['error' => 'Demande non trouvée'], 404);
-        }
-
-        return new JsonResponse([
-            'id' => $demande->getId(),
-            'nomBenificiaire' => $demande->getNomBenificiaire(),
-            'cin' => $demande->getCin(),
-            'contact' => $demande->getContact(),
-            'dateDemande' => $demande->getDateDemande()?->format('Y-m-d'),
-            'nbPersonnes' => $demande->getNbPersonnes(),
-            'villeMission' => $demande->getVilleMission(),
-            'observation' => $demande->getObservation(),
-            'description' => $demande->getDescription(),
-        ]);
+    if (!$demande) {
+        return new JsonResponse(['error' => 'Demande non trouvée'], 404);
     }
+
+    $details = [];
+    foreach ($demande->getTDemandeDets() as $det) {
+        $details[] = [
+            'vehicule' => $det->getVehiculeId()?->getMatricule() ?? '',
+            'conducteur' => $det->getConducteurId()?->getNom() ?? '',
+            'type_prestation' => $det->getPrestationId()?->getTypePrestationId()?->getLibelle() ?? '',
+            'zone' => $det->getPrestationId()?->getZoneId()?->getLibelle() ?? '',
+            'prestation' => $det->getPrestationId()?->getNomPrestation() ?? '',
+            'quantite' => $det->getQuantite(),
+            'nb_jours' => $det->getNbjour(),
+        ];
+    }
+
+    return new JsonResponse([
+        'id' => $demande->getId(),
+        'nomBenificiaire' => $demande->getNomBenificiaire(),
+        'cin' => $demande->getCin(),
+        'contact' => $demande->getContact(),
+        'dateDemande' => $demande->getDateDemande()?->format('Y-m-d\TH:i'),
+        'nbPersonnes' => $demande->getNbPersonnes(),
+        'observation' => $demande->getObservation(),
+        'description' => $demande->getDescription(),
+        'adressDepart' => $demande->getAdressDepart(),
+        'details' => $details,
+    ]);
+}
 
     #[Route('/ajax/prestations', name: 'ajax_prestations_by_type_and_zone')]
     public function getPrestationsByTypeAndZone(Request $request, EntityManagerInterface $em): JsonResponse
