@@ -41,7 +41,7 @@ class TDemandeCab
     #[ORM\ManyToOne(inversedBy: 'tDemandeCabs')]
     private ?PStatut $statut_id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     private ?float $tarif_total = null;
 
     #[ORM\Column(length: 255)]
