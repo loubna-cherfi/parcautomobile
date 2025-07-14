@@ -348,28 +348,28 @@
           <div class="row">
             <div class="col-md-6 mb-2">
               <input type="hidden" name="id" id="traiter-id">
-              <input type="text" name="nomBenificiaire" id="traiter-nom" class="form-control form-control-sm" placeholder="Nom du bénéficiaire" required>
+              <input type="text" name="nomBenificiaire" id="traiter-nom" class="form-control form-control-sm" placeholder="Nom du bénéficiaire" disabled>
             </div>
             <div class="col-md-6 mb-2">
-              <input type="text" name="cin" id="traiter-cin" class="form-control form-control-sm" placeholder="CIN">
+              <input type="text" name="cin" id="traiter-cin" class="form-control form-control-sm" placeholder="CIN" disabled>
             </div>
             <div class="col-md-6 mb-2">
-              <input type="text" name="observation" id="traiter-observation" class="form-control form-control-sm" placeholder="Observation">
+              <input type="text" name="observation" id="traiter-observation" class="form-control form-control-sm" placeholder="Observation" disabled>
             </div>
             <div class="col-md-6 mb-2">
-              <input type="text" name="description" id="traiter-description" class="form-control form-control-sm" placeholder="Description">
+              <input type="text" name="description" id="traiter-description" class="form-control form-control-sm" placeholder="Description" disabled>
             </div>
             <div class="col-md-6 mb-2">
-              <input type="text" name="contact" id="traiter-contact" class="form-control form-control-sm" placeholder="Contact">
+              <input type="text" name="contact" id="traiter-contact" class="form-control form-control-sm" placeholder="Contact" disabled>
             </div>
             <div class="col-md-6 mb-2">
-              <input type="number" name="nbPersonnes" id="traiter-nbPersonnes" class="form-control form-control-sm" placeholder="Nombre de personnes">
+              <input type="number" name="nbPersonnes" id="traiter-nbPersonnes" class="form-control form-control-sm" placeholder="Nombre de personnes" disabled>
             </div>
             <div class="col-md-6 mb-2">
-              <input type="datetime-local" name="dateDemande" id="traiter-date" class="form-control form-control-sm" required>
+              <input type="datetime-local" name="dateDemande" id="traiter-date" class="form-control form-control-sm" disabled>
             </div>
             <div class="col-md-6 mb-2">
-              <input type="text" name="adressDepart" id="traiter-adresse" class="form-control form-control-sm" placeholder="Adresse de départ" required>
+              <input type="text" name="adressDepart" id="traiter-adresse" class="form-control form-control-sm" placeholder="Adresse de départ" disabled>
             </div>
           </div>
 
@@ -399,7 +399,7 @@
         </div>
 
         <div class="modal-footer mt-auto d-flex justify-content-end">
-           <button type="submit" class="btn btn-primary btn-sm">
+           <button type="button" id="btn-traiter-enregistrer" class="btn btn-primary btn-sm">
             <i class="fa-regular fa-floppy-disk"></i> Enregistrer
           </button>
           <button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Annuler</button>
@@ -449,7 +449,11 @@
             <div class="form-group col-6">
               <label>Prestation</label>
               <input type="text" class="form-control" id="edit-prestation"disabled>
+               <input type="hidden" id="edit-prestation-id">
             </div>
+           
+
+
             <div class="form-group col-6">
               <label>Quantité</label>
               <input type="number" class="form-control" id="edit-quantite"disabled>
@@ -469,7 +473,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Enregistrer</button>
+          <button type="submit" class="btn btn-primary" id="btn-enregistrer-detail">Enregistrer</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
         </div>
       </form>
