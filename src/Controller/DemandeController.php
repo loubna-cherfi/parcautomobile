@@ -90,19 +90,20 @@ public function getDemande(int $id, EntityManagerInterface $em): JsonResponse
     if (!$demande) {
         return new JsonResponse(['error' => 'Demande non trouvée'], 404);
     }
-
     $details = [];
-    foreach ($demande->getTDemandeDets() as $det) {
-        $details[] = [
-            'vehicule' => $det->getVehiculeId()?->getMatricule() ?? '',
-            'conducteur' => $det->getConducteurId()?->getNom() ?? '',
-            'type_prestation' => $det->getPrestationId()?->getTypePrestationId()?->getLibelle() ?? '',
-            'zone' => $det->getPrestationId()?->getZoneId()?->getLibelle() ?? '',
-            'prestation' => $det->getPrestationId()?->getNomPrestation() ?? '',
-            'quantite' => $det->getQuantite(),
-            'nb_jours' => $det->getNbjour(),
-        ];
-    }
+   foreach ($demande->getTDemandeDets() as $det) {
+    $details[] = [
+        'vehicule' => $det->getVehiculeId()?->getMatricule() ?? '',
+        'conducteur' => $det->getConducteurId()?->getNom() ?? '',
+        'type_prestation' => $det->getPrestationId()?->getTypePrestationId()?->getLibelle() ?? '',
+        'zone' => $det->getPrestationId()?->getZoneId()?->getLibelle() ?? '',
+        'prestation' => $det->getPrestationId()?->getNomPrestation() ?? '',
+        'prestationId' => $det->getPrestationId()?->getId(), 
+        'quantite' => $det->getQuantite(),
+        'nb_jours' => $det->getNbjour(),
+    ];
+}
+
 
     return new JsonResponse([
         'id' => $demande->getId(),
@@ -261,15 +262,14 @@ public function enregistrerTraitement(Request $request, EntityManagerInterface $
         return $this->json(['error' => 'Demande non trouvée'], 404);
     }
 
-    // Supprimer les anciens détails
+    // Supprimer anciens détails
     foreach ($demande->getTDemandeDets() as $oldDetail) {
         $em->remove($oldDetail);
     }
-    $em->flush(); // Flush pour bien supprimer avant de recréer
+    $em->flush();
 
     $totalTarif = 0;
     foreach ($data['details'] as $detail) {
-        // Recherche entités nécessaires
         $vehicule = $em->getRepository(PVehicule::class)->findOneBy(['matricule' => $detail['vehicule']]);
         $conducteur = $em->getRepository(PConducteur::class)->findOneBy(['nom' => $detail['conducteur']]);
         $typePrestation = $em->getRepository(PTypePrestation::class)->findOneBy(['libelle' => $detail['type_prestation']]);
@@ -277,7 +277,6 @@ public function enregistrerTraitement(Request $request, EntityManagerInterface $
         $prestation = $em->getRepository(PPrestation::class)->findOneBy(['nomPrestation' => $detail['prestation']]);
 
         if (!$vehicule || !$conducteur || !$typePrestation || !$zone || !$prestation) {
-            // Optionnel : gérer les erreurs / continuer
             continue;
         }
 
@@ -308,6 +307,5 @@ public function enregistrerTraitement(Request $request, EntityManagerInterface $
 
     return $this->json(['success' => true, 'message' => 'Traitement enregistré avec succès', 'tarifTotal' => $totalTarif]);
 }
-
 
 }
