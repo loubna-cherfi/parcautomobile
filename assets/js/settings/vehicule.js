@@ -16,7 +16,7 @@ $(document).ready(function () {
         });
     }
 
-    // Debug : bouton cliqué
+    // Debug : bouton cliqué  
     $(document).on('click', 'button', function () {
         console.log("loubna:", $(this).attr("data-bs-target"));
     });

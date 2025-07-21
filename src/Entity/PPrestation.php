@@ -51,9 +51,19 @@ class PPrestation
     #[ORM\Column(nullable: true)]
     private ?float $tarifWeekEnd = null;
 
+    #[ORM\Column]
+    private ?bool $isKilometrage = null;
+
+    #[ORM\Column]
+    private ?bool $isAvecNbPersonne = null;
+
+    #[ORM\OneToMany(mappedBy: 'prestation', targetEntity: TMissionDet::class)]
+    private Collection $tMissionDets;
+
     public function __construct()
     {
         $this->tDemandeDets = new ArrayCollection();
+        $this->tMissionDets = new ArrayCollection();
     }
 
  
@@ -215,6 +225,60 @@ class PPrestation
     public function setTarifWeekEnd(float $tarifWeekEnd): static
     {
         $this->tarifWeekEnd = $tarifWeekEnd;
+
+        return $this;
+    }
+
+    public function isIsKilometrage(): ?bool
+    {
+        return $this->isKilometrage;
+    }
+
+    public function setIsKilometrage(bool $isKilometrage): static
+    {
+        $this->isKilometrage = $isKilometrage;
+
+        return $this;
+    }
+
+    public function isIsAvecNbPersonne(): ?bool
+    {
+        return $this->isAvecNbPersonne;
+    }
+
+    public function setIsAvecNbPersonne(bool $isAvecNbPersonne): static
+    {
+        $this->isAvecNbPersonne = $isAvecNbPersonne;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMissionDet>
+     */
+    public function getTMissionDets(): Collection
+    {
+        return $this->tMissionDets;
+    }
+
+    public function addTMissionDet(TMissionDet $tMissionDet): static
+    {
+        if (!$this->tMissionDets->contains($tMissionDet)) {
+            $this->tMissionDets->add($tMissionDet);
+            $tMissionDet->setPrestation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMissionDet(TMissionDet $tMissionDet): static
+    {
+        if ($this->tMissionDets->removeElement($tMissionDet)) {
+            // set the owning side to null (unless already changed)
+            if ($tMissionDet->getPrestation() === $this) {
+                $tMissionDet->setPrestation(null);
+            }
+        }
 
         return $this;
     }

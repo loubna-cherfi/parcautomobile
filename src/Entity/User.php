@@ -90,6 +90,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         #[ORM\OneToMany(mappedBy: 'executant_user_id', targetEntity: TMissionCab::class)]
         private Collection $tMissionCabs;
 
+        #[ORM\OneToMany(mappedBy: 'annuler_user_id', targetEntity: TDemandeCab::class)]
+        private Collection $test;
+
+        #[ORM\OneToMany(mappedBy: 'executant_user_id', targetEntity: TDemandeCab::class)]
+        private Collection $excutercabs;
+
 
     public function __construct()
     {
@@ -105,6 +111,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->pVehicules = new ArrayCollection();
         $this->tDemandeCabs = new ArrayCollection();
         $this->tMissionCabs = new ArrayCollection();
+        $this->test = new ArrayCollection();
+        $this->excutercabs = new ArrayCollection();
 
     }
 
@@ -562,6 +570,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($tMissionCab->getExecutantUserId() === $this) {
                 $tMissionCab->setExecutantUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TDemandeCab>
+     */
+    public function getTest(): Collection
+    {
+        return $this->test;
+    }
+
+    public function addTest(TDemandeCab $test): static
+    {
+        if (!$this->test->contains($test)) {
+            $this->test->add($test);
+            $test->setAnnulerUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTest(TDemandeCab $test): static
+    {
+        if ($this->test->removeElement($test)) {
+            // set the owning side to null (unless already changed)
+            if ($test->getAnnulerUserId() === $this) {
+                $test->setAnnulerUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TDemandeCab>
+     */
+    public function getExcutercabs(): Collection
+    {
+        return $this->excutercabs;
+    }
+
+    public function addExcutercab(TDemandeCab $excutercab): static
+    {
+        if (!$this->excutercabs->contains($excutercab)) {
+            $this->excutercabs->add($excutercab);
+            $excutercab->setExecutantUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExcutercab(TDemandeCab $excutercab): static
+    {
+        if ($this->excutercabs->removeElement($excutercab)) {
+            // set the owning side to null (unless already changed)
+            if ($excutercab->getExecutantUserId() === $this) {
+                $excutercab->setExecutantUserId(null);
             }
         }
 
