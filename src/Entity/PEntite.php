@@ -142,6 +142,12 @@ class PEntite
     #[ORM\OneToMany(mappedBy: 'dossier_id', targetEntity: TDemandeCab::class)]
     private Collection $tDemandeCabs;
 
+    #[ORM\OneToMany(mappedBy: 'dossier', targetEntity: TMissionCab::class)]
+    private Collection $tMissionCabs;
+
+    #[ORM\OneToMany(mappedBy: 'dossier', targetEntity: TMissionCab::class)]
+    private Collection $tMissionCabsDossier;
+
     public function __construct()
     {
         $this->pUserDossierActions = new ArrayCollection();
@@ -149,6 +155,8 @@ class PEntite
         $this->counters = new ArrayCollection();
         $this->tAcReceptionObjs = new ArrayCollection();
         $this->tDemandeCabs = new ArrayCollection();
+        $this->tMissionCabs = new ArrayCollection();
+        $this->tMissionCabsDossier = new ArrayCollection();
 
     }
 
@@ -724,5 +732,46 @@ class PEntite
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, TMissionCab>
+     */
+    public function getTMissionCabs(): Collection
+    {
+        return $this->tMissionCabs;
+    }
+
+    /**
+     * @return Collection<int, TMissionCab>
+     */
+    public function getTMissionCabsDossier(): Collection
+    {
+        return $this->tMissionCabsDossier;
+    }
+
+    public function addTMissionCabsDossier(TMissionCab $tMissionCabsDossier): static
+    {
+        if (!$this->tMissionCabsDossier->contains($tMissionCabsDossier)) {
+            $this->tMissionCabsDossier->add($tMissionCabsDossier);
+            $tMissionCabsDossier->setDossier($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMissionCabsDossier(TMissionCab $tMissionCabsDossier): static
+    {
+        if ($this->tMissionCabsDossier->removeElement($tMissionCabsDossier)) {
+            // set the owning side to null (unless already changed)
+            if ($tMissionCabsDossier->getDossier() === $this) {
+                $tMissionCabsDossier->setDossier(null);
+            }
+        }
+
+        return $this;
+    }
+
+  
+  
 
 }

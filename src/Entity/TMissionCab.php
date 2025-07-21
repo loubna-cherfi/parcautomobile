@@ -25,7 +25,7 @@ class TMissionCab
     #[ORM\Column]
     private ?float $tarif_total = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     private ?bool $is_facturee = null;
 
     #[ORM\ManyToOne(inversedBy: 'tMissionCabs')]
@@ -37,17 +37,44 @@ class TMissionCab
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?User $evaluateur_user_id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE,nullable:true)]
     private ?\DateTimeInterface $date_evaluation = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     private ?int $evaluation_note = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     private ?bool $active = null;
 
     #[ORM\OneToMany(mappedBy: 'mission_id', targetEntity: TMissionDet::class)]
     private Collection $tMissionDets;
+
+    #[ORM\ManyToOne(inversedBy: 'tMissionCabsDossier')]
+    private ?PEntite $dossier = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $nbPersonne = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $date_mission = null;
+
+    #[ORM\Column]
+    private ?int $contact = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $cin = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $nom_benificiaire = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $observation = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $adress_depart = null;
 
     public function __construct()
     {
@@ -205,6 +232,114 @@ class TMissionCab
                 $tMissionDet->setMissionId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDossier(): ?PEntite
+    {
+        return $this->dossier;
+    }
+
+    public function setDossier(?PEntite $dossier): static
+    {
+        $this->dossier = $dossier;
+
+        return $this;
+    }
+
+    public function getNbPersonne(): ?int
+    {
+        return $this->nbPersonne;
+    }
+
+    public function setNbPersonne(?int $nbPersonne): static
+    {
+        $this->nbPersonne = $nbPersonne;
+
+        return $this;
+    }
+
+    public function getDateMission(): ?\DateTimeInterface
+    {
+        return $this->date_mission;
+    }
+
+    public function setDateMission(\DateTimeInterface $date_mission): static
+    {
+        $this->date_mission = $date_mission;
+
+        return $this;
+    }
+
+    public function getContact(): ?int
+    {
+        return $this->contact;
+    }
+
+    public function setContact(int $contact): static
+    {
+        $this->contact = $contact;
+
+        return $this;
+    }
+
+    public function getCin(): ?string
+    {
+        return $this->cin;
+    }
+
+    public function setCin(string $cin): static
+    {
+        $this->cin = $cin;
+
+        return $this;
+    }
+
+    public function getNomBenificiaire(): ?string
+    {
+        return $this->nom_benificiaire;
+    }
+
+    public function setNomBenificiaire(string $nom_benificiaire): static
+    {
+        $this->nom_benificiaire = $nom_benificiaire;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getObservation(): ?string
+    {
+        return $this->observation;
+    }
+
+    public function setObservation(string $observation): static
+    {
+        $this->observation = $observation;
+
+        return $this;
+    }
+
+    public function getAdressDepart(): ?string
+    {
+        return $this->adress_depart;
+    }
+
+    public function setAdressDepart(string $adress_depart): static
+    {
+        $this->adress_depart = $adress_depart;
 
         return $this;
     }

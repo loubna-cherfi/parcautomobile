@@ -25,14 +25,45 @@ import 'jquery-ui/ui/i18n/datepicker-fr.js';
 import 'jquery-ui/themes/base/all.css';
 
 
-$(document).ready(function() {
-  $.active = false;
-  $('body').bind('click keypress', function() {
-    $.active = true;
+// $(document).ready(function() {
+//   $.active = false;
+//   $('body').bind('click keypress', function() {
+//     $.active = true;
 
+//   });
+//   checkActivity(3600000, 60000, 0); // timeout = 30 minutes, interval = 1 minute.
+// });
+
+
+  $(document).ready(function() {
+      var active = false;
+      var timeout = 3600000; 
+      var checkInterval = 60000; 
+      var elapsed = 0;
+
+      $(document).on('keypress click', function() {
+          active = true;
+      });
+
+      function checkActivity() {
+          if (active) {
+              elapsed = 0;
+              active = false;
+          } else {
+              if (elapsed >= timeout) {
+                toastr.warning("Votre session a expiré. Vous allez être redirigé vers la page de connexion.");
+                setTimeout(() => {
+                  window.location.href = Routing.generate('app_logout'); 
+                }, 300);
+              }
+              elapsed += checkInterval;
+          }
+          
+          setTimeout(checkActivity, checkInterval);
+      }
+      setTimeout(checkActivity, checkInterval);
   });
-  checkActivity(3600000, 60000, 0); // timeout = 30 minutes, interval = 1 minute.
-});
+
 
 function checkActivity(timeout, interval, elapsed) {
   console.log("ZZ")

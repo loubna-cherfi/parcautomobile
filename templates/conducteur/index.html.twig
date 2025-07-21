@@ -78,53 +78,87 @@
             </table>
         </div>
 
-    <!-- Modal Add Conducteur -->
+   <!-- Modal Add Conducteur -->
 <div class="modal right fade" id="addConducteur" role="dialog" aria-labelledby="addConducteur" aria-hidden="true">
     <div class="modal-dialog" style="width:40%" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">AJOUTER CONDUCTEUR</h5>
+                <h5 class="modal-title text-primary">AJOUTER CONDUCTEUR</h5>
                 <button type="button" class="close" data-dismiss="modal" id="closeAddConducteur" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="d-flex justify-content-between">
-                    <input type="text" class="form-control m-2" name="nom" id="nom" placeholder="NOM" required/>
-                    <input type="text" class="form-control m-2" name="prenom" id="prenom" placeholder="PRÉNOM" required/>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <input type="text" class="form-control m-2" name="cin" id="cin" placeholder="CIN" required/>
-                      <input type="text" class="form-control m-2" name="telephone" id="telephone" placeholder="TÉLÉPHONE" required/>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <input type="text" class="form-control m-2" name="permisNumero" id="permisNumero" placeholder="NUMÉRO DE PERMIS" required/>
-                    <input type="date" class="form-control m-2" name="permisDateObtention" id="permisDateObtention" placeholder="PERMIS DATE OBTENTION" required/>
-                    <input type="text" class="form-control m-2" name="permisType" id="permisType" placeholder="TYPE DE PERMIS" required/>
 
-
-                </div>
-                  <div class="d-flex justify-content-between">
-                    <input type="text" class="form-control m-2" name="email" id="email" placeholder="EMAIL" required/>
-                    <input type="text" class="form-control m-2" name="adresse" id="adresse" placeholder="ADRESSE" required/>
-                    <input type="date" class="form-control m-2" name="dateNaissance" id="dateNaissance" placeholder="DATE DE NAISSANCE" required/> 
-
-
-
-                </div>
-                  {# <div class="d-flex justify-content-between">
-
-                {# </div> #}
-                <div class="d-flex m-2">
-                    <div class="form-check mr-3">
-                        <input class="form-check-input" type="radio" name="status" id="actif" value="actif" checked>
-                        <label class="form-check-label" for="actif">ACTIF</label>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="nom">Nom</label>
+                        <input type="text" class="form-control" name="nom" id="nom" required placeholder="Nom" />
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="status" id="desactif" value="desactif">
-                        <label class="form-check-label" for="desactif">DÉSACTIF</label>
+                    <div class="form-group col-md-6">
+                        <label for="prenom">Prénom</label>
+                        <input type="text" class="form-control" name="prenom" id="prenom" required placeholder="Prénom" />
                     </div>
                 </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="cin">CIN</label>
+                        <input type="text" class="form-control" name="cin" id="cin" required placeholder="CIN" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="telephone">Téléphone</label>
+                        <input type="text" class="form-control" name="telephone" id="telephone" required placeholder="Téléphone" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="permisNumero">Numéro de permis</label>
+                        <input type="text" class="form-control" name="permisNumero" id="permisNumero" required  placeholder="Numéro de permis"/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="permisDateObtention">Date d'obtention</label>
+                        <input type="date" class="form-control" name="permisDateObtention" id="permisDateObtention" required />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="permisType">Type de permis</label>
+                        <input type="text" class="form-control" name="permisType" id="permisType" required placeholder="Type de permis" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" name="email" id="email" required placeholder="Email" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="adresse">Adresse</label>
+                        <input type="text" class="form-control" name="adresse" id="adresse" required placeholder="Adresse" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="dateNaissance">Date de naissance</label>
+                        <input type="date" class="form-control" name="dateNaissance" id="dateNaissance" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {# <label>Status</label> #}
+                    <div class="d-flex">
+                        <div class="form-check mr-3">
+                            <input class="form-check-input" type="radio" name="status" id="actif" value="actif" checked>
+                            <label class="form-check-label" for="actif">Actif</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="desactif" value="desactif">
+                            <label class="form-check-label" for="desactif">Désactif</label>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer m-2">
                 <button type="button" class="btn-sm btn btn-primary saveAddConducteur ladda-button" data-spinner-size="18" data-style="expand-right">
@@ -135,7 +169,7 @@
             </div>
         </div>
     </div>
-</div>   
+</div>
 
 
    <!-- Modal Update Conducteur -->
@@ -148,47 +182,77 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
             <div class="modal-body">
-                <input type="number" class="form-control m-2" name="id" id="idConducteur" hidden/>
+                <input type="hidden" name="id" id="idConducteur" />
 
-                 <div class="d-flex justify-content-between">
-                    <input type="text" class="form-control m-2" name="nomUpd" id="nomUpd" placeholder="NOM" required/>
-                    <input type="text" class="form-control m-2" name="prenomUpd" id="prenomUpd" placeholder="PRÉNOM" required/>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <input type="text" class="form-control m-2" name="cinUpd" id="cinUpd" placeholder="CIN" required/>
-                      <input type="text" class="form-control m-2" name="telephoneUpd" id="telephoneUpd" placeholder="TÉLÉPHONE" required/>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <input type="text" class="form-control m-2" name="permisNumeroUpd" id="permisNumeroUpd" placeholder="NUMÉRO DE PERMIS" required/>
-                    {# <input type="date" class="form-control m-2" name="permisDateObtentionUpd" id="permisDateObtentionUpd" placeholder="PERMIS DATE OBTENTION" required/> #}
-                    {# <small class="text-muted ml-2">Veuillez sélectionner la date obtention de permis</small> #}
-                    <input type="text" class="form-control m-2" name="permisTypeUpd" id="permisTypeUpd" placeholder="TYPE DE PERMIS" required/>
-
-
-
-                </div>
-                  <div class="d-flex justify-content-between">
-                    <input type="text" class="form-control m-2" name="emailUpd" id="emailUpd" placeholder="EMAIL" required/>
-                    <input type="text" class="form-control m-2" name="adresseUpd" id="adresseUpd" placeholder="ADRESSE" required/>
-
-                </div>
-                  {# <div class="d-flex justify-content-between">
-                    {# <input type="date" class="form-control m-2" name="dateNaissanceUpd" id="dateNaissanceUpd" required/> #}
-                    {# <small class="text-muted ml-2">Veuillez sélectionner la date de naissance</small> #}
-
-                {# </div>  #}
-                <div class="d-flex m-2">
-                    <div class="form-check mr-3">
-                        <input class="form-check-input" type="radio" name="statusupd" id="actifupd" value="actif" checked>
-                        <label class="form-check-label" for="actifupd">ACTIF</label>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="nomUpd">Nom</label>
+                        <input type="text" class="form-control" name="nomUpd" id="nomUpd" required />
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="statusupd" id="desactifupd" value="desactif">
-                        <label class="form-check-label" for="desactifupd">DÉSACTIF</label>
+                    <div class="form-group col-md-6">
+                        <label for="prenomUpd">Prénom</label>
+                        <input type="text" class="form-control" name="prenomUpd" id="prenomUpd" required />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="cinUpd">CIN</label>
+                        <input type="text" class="form-control" name="cinUpd" id="cinUpd" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="telephoneUpd">Téléphone</label>
+                        <input type="text" class="form-control" name="telephoneUpd" id="telephoneUpd" required />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="permisNumeroUpd">Numéro de permis</label>
+                        <input type="text" class="form-control" name="permisNumeroUpd" id="permisNumeroUpd" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="permisTypeUpd">Type de permis</label>
+                        <input type="text" class="form-control" name="permisTypeUpd" id="permisTypeUpd" required />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="emailUpd">Email</label>
+                        <input type="email" class="form-control" name="emailUpd" id="emailUpd" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="adresseUpd">Adresse</label>
+                        <input type="text" class="form-control" name="adresseUpd" id="adresseUpd" required />
+                    </div>
+                </div>
+
+                <!-- Optionnel : à décommenter si utilisé -->
+                <!--
+                <div class="form-group">
+                    <label for="dateNaissanceUpd">Date de naissance</label>
+                    <input type="date" class="form-control" name="dateNaissanceUpd" id="dateNaissanceUpd" />
+                </div>
+                -->
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="d-flex">
+                        <div class="form-check mr-3">
+                            <input class="form-check-input" type="radio" name="statusupd" id="actifupd" value="actif" checked>
+                            <label class="form-check-label" for="actifupd">Actif</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="statusupd" id="desactifupd" value="desactif">
+                            <label class="form-check-label" for="desactifupd">Désactif</label>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div class="modal-footer m-2">
                 <button type="button" id="updateBtn" class="btn-sm btn btn-primary saveUpdateConducteur ladda-button" data-spinner-size="18" data-style="expand-right">
                     <span class="ladda-label">
@@ -199,7 +263,6 @@
         </div>
     </div>
 </div>
-
 
     </div>
 </div>

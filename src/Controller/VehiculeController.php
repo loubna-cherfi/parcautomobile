@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\PTypeVehiculeRepository;
 use App\Repository\PMarqueVehiculeRepository;
-   
+     
 
 #[Route('/vehicule')]
 class VehiculeController extends AbstractController
@@ -132,7 +132,7 @@ $types = $doctrine->getRepository(\App\Entity\PTypeVehicule::class)->findAll();
 $marques = $doctrine->getRepository(\App\Entity\PMarqueVehicule::class)->findAll();
 
 $html = $this->render('vehicule/index.html.twig', [
-    'vehicule' => $vehicules,
+    'vehicules' => $vehicules,
     'actions' => $actions,
     'types' => $types,
     'marques' => $marques,

@@ -76,75 +76,105 @@
             </table>
         </div>
 
-        {# Modal Add Vehicule #}
-        <div class="modal right fade" id="addVehicule" role="dialog" aria-labelledby="addVehicule" aria-hidden="true">
-            <div class="modal-dialog" style="width:40%" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">AJOUTER VÉHICULE</h5>
-                        <button type="button" class="close" data-dismiss="modal" id="closeAddVehicule" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+     {# Modal Add Vehicule #}
+<div class="modal right fade" id="addVehicule" role="dialog" aria-labelledby="addVehicule" aria-hidden="true">
+    <div class="modal-dialog" style="width:40%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary">AJOUTER VÉHICULE</h5>
+                <button type="button" class="close" data-dismiss="modal" id="closeAddVehicule" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="matricule">Matricule</label>
+                        <input type="text" class="form-control" name="matricule" id="matricule" placeholder="Matricule" required />
                     </div>
-                    <div class="modal-body">
-                        <div class="d-flex justify-content-between">
-                            <input type="text" class="form-control m-2" name="matricule" id="matricule" placeholder="MATRICULE" required/>
-                            <input type="text" class="form-control m-2" name="model" id="model" placeholder="MODÈLE" required/>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <input type="text" class="form-control m-2" name="carburant" id="carburant" placeholder="CARBURANT" required/>
-                            <input type="text" class="form-control m-2" name="transmission" id="transmission" placeholder="TRANSMISSION" required/>
-                        </div>
-        <div class="d-flex justify-content-between">
-    <div class="col-6 px-2">
-        <select class="form-control" id="marque_vehicule_id" name="marque_vehicule_id" required>
-            <option value="">MARQUE</option>
-            {% for marque in marques %}
-                <option value="{{ marque.id }}">{{ marque.marque }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-6 px-2">
-        <select class="form-control" id="type_vehicule_id" name="type_vehicule_id" required>
-            <option value="">TYPE</option>
-            {% for type in types %}
-                <option value="{{ type.id }}">{{ type.libelle }}</option>
-            {% endfor %}
-        </select>
-    </div>
-</div>
-                        <div class="d-flex justify-content-between">
-                            <input type="number" class="form-control m-2" name="kilometrage" id="kilometrage" placeholder="KILOMÉTRAGE" required/>
-                            <input type="number" class="form-control m-2" name="capacite" id="capacite" placeholder="CAPACITÉ" required/>
-                        </div>
-                        <div class="d-flex m-2">
-                            <div class="form-check mr-3">
-                                <input class="form-check-input" type="radio" name="statusVehicule" id="actif" value="actif" checked>
-                                <label class="form-check-label" for="actif">ACTIF</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="statusVehicule" id="inactif" value="inactif">
-                                <label class="form-check-label" for="inactif">INACTIF</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer m-2">
-                        <button type="submit" class="btn-sm btn btn-primary saveAddVehicule ladda-button" data-spinner-size="18" data-style="expand-right">
-                            <span class="ladda-label">
-                                <i class="fa-regular fa-floppy-disk"></i> Enregistrer
-                            </span>
-                        </button>
+                    <div class="form-group col-md-6">
+                        <label for="model">Modèle</label>
+                        <input type="text" class="form-control" name="model" id="model" placeholder="Modèle" required />
                     </div>
                 </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="carburant">Carburant</label>
+                        <input type="text" class="form-control" name="carburant" id="carburant" placeholder="Carburant" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="transmission">Transmission</label>
+                        <input type="text" class="form-control" name="transmission" id="transmission" placeholder="Transmission" required />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="marque_vehicule_id">Marque</label>
+                        <select class="form-control" id="marque_vehicule_id" name="marque_vehicule_id" required>
+                            <option value="">Sélectionner une marque</option>
+                            {% for marque in marques %}
+                                <option value="{{ marque.id }}">{{ marque.marque }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="type_vehicule_id">Type</label>
+                        <select class="form-control" id="type_vehicule_id" name="type_vehicule_id" required>
+                            <option value="">Sélectionner un type</option>
+                            {% for type in types %}
+                                <option value="{{ type.id }}">{{ type.libelle }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="kilometrage">Kilométrage</label>
+                        <input type="number" class="form-control" name="kilometrage" id="kilometrage" placeholder="Kilométrage" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="capacite">Capacité</label>
+                        <input type="number" class="form-control" name="capacite" id="capacite" placeholder="Capacité" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="d-flex">
+                        <div class="form-check mr-3">
+                            <input class="form-check-input" type="radio" name="statusVehicule" id="actif" value="actif" checked>
+                            <label class="form-check-label" for="actif">Actif</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="statusVehicule" id="inactif" value="inactif">
+                            <label class="form-check-label" for="inactif">Inactif</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer m-2">
+                <button type="submit" class="btn btn-sm btn-primary saveAddVehicule ladda-button" data-spinner-size="18" data-style="expand-right">
+                    <span class="ladda-label">
+                        <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                    </span>
+                </button>
             </div>
         </div>
+    </div>
+</div>
+
 
  {# Modal Update Vehicule #}
 <div class="modal right fade" id="updateVehicule" role="dialog" aria-labelledby="updateVehicule" aria-hidden="true">
     <div class="modal-dialog" style="width:40%" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">MODIFIER VÉHICULE</h5>
+                <h5 class="modal-title text-primary">MODIFIER VÉHICULE</h5>
                 <button type="button" class="close" data-dismiss="modal" id="closeUpdateVehicule" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -152,50 +182,76 @@
             <div class="modal-body">
                 <input type="hidden" name="idVehicule" id="idVehicule" />
 
-                <div class="d-flex justify-content-between">
-                    <input type="text" class="form-control m-2" name="matriculeUpd" id="matriculeUpd" placeholder="MATRICULE" required/>
-                    <input type="text" class="form-control m-2" name="modelUpd" id="modelUpd" placeholder="MODÈLE" required/>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <input type="text" class="form-control m-2" name="carburantUpd" id="carburantUpd" placeholder="CARBURANT" required/>
-                    <input type="text" class="form-control m-2" name="transmissionUpd" id="transmissionUpd" placeholder="TRANSMISSION" required/>
-                </div>
-     <div class="d-flex justify-content-between">
-    <div class="col-6 px-2">
-        <select class="form-control" id="marque_vehicule_id_upd" name="marque_vehicule_id_upd" required>
-            <option value="">MARQUE</option>
-            {% for marque in marques %}
-                <option value="{{ marque.id }}">{{ marque.marque }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-6 px-2">
-        <select class="form-control" id="type_vehicule_id_upd" name="type_vehicule_id_upd" required>
-            <option value="">TYPE</option>
-            {% for type in types %}
-                <option value="{{ type.id }}">{{ type.libelle }}</option>
-            {% endfor %}
-        </select>
-    </div>
-</div>
-
-                <div class="d-flex justify-content-between">
-                    <input type="number" class="form-control m-2" name="kilometrageUpd" id="kilometrageUpd" placeholder="KILOMÉTRAGE" required/>
-                    <input type="number" class="form-control m-2" name="capaciteUpd" id="capaciteUpd" placeholder="CAPACITÉ" required/>
-                </div>
-                <div class="d-flex m-2">
-                    <div class="form-check mr-3">
-                        <input class="form-check-input" type="radio" name="statusVehiculeUpd" id="actifUpd" value="actif" checked>
-                        <label class="form-check-label" for="actifUpd">ACTIF</label>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="matriculeUpd">Matricule</label>
+                        <input type="text" class="form-control" name="matriculeUpd" id="matriculeUpd" placeholder="Matricule" required />
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="statusVehiculeUpd" id="inactifUpd" value="inactif">
-                        <label class="form-check-label" for="inactifUpd">INACTIF</label>
+                    <div class="form-group col-md-6">
+                        <label for="modelUpd">Modèle</label>
+                        <input type="text" class="form-control" name="modelUpd" id="modelUpd" placeholder="Modèle" required />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="carburantUpd">Carburant</label>
+                        <input type="text" class="form-control" name="carburantUpd" id="carburantUpd" placeholder="Carburant" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="transmissionUpd">Transmission</label>
+                        <input type="text" class="form-control" name="transmissionUpd" id="transmissionUpd" placeholder="Transmission" required />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="marque_vehicule_id_upd">Marque</label>
+                        <select class="form-control" id="marque_vehicule_id_upd" name="marque_vehicule_id_upd" required>
+                            <option value="">Sélectionner une marque</option>
+                            {% for marque in marques %}
+                                <option value="{{ marque.id }}">{{ marque.marque }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="type_vehicule_id_upd">Type</label>
+                        <select class="form-control" id="type_vehicule_id_upd" name="type_vehicule_id_upd" required>
+                            <option value="">Sélectionner un type</option>
+                            {% for type in types %}
+                                <option value="{{ type.id }}">{{ type.libelle }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="kilometrageUpd">Kilométrage</label>
+                        <input type="number" class="form-control" name="kilometrageUpd" id="kilometrageUpd" placeholder="Kilométrage" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="capaciteUpd">Capacité</label>
+                        <input type="number" class="form-control" name="capaciteUpd" id="capaciteUpd" placeholder="Capacité" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="d-flex">
+                        <div class="form-check mr-3">
+                            <input class="form-check-input" type="radio" name="statusVehiculeUpd" id="actifUpd" value="actif" checked>
+                            <label class="form-check-label" for="actifUpd">Actif</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="statusVehiculeUpd" id="inactifUpd" value="inactif">
+                            <label class="form-check-label" for="inactifUpd">Inactif</label>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer m-2">
-                <button type="submit" class="btn-sm btn btn-primary saveUpdateVehicule ladda-button" data-spinner-size="18" data-style="expand-right">
+                <button type="submit" class="btn btn-sm btn-primary saveUpdateVehicule ladda-button" data-spinner-size="18" data-style="expand-right">
                     <span class="ladda-label">
                         <i class="fa-regular fa-floppy-disk"></i> Enregistrer
                     </span>

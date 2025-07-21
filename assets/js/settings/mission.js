@@ -1,45 +1,56 @@
 $(document).ready(function () {
+  // Initialisation de la table
   $('#missionTable').DataTable({
     lengthMenu: [[15, 25, 50, -1], [15, 25, 50, 'Tous']],
     autoWidth: false,
     destroy: true
   });
 
-  $(document).on('click', '.btnDetails', function () {
-    const missionId = $(this).data('id');
-    const url = `/mission/details-mission/${missionId}`;
+
+  
+  let currentMissionId = null;
+
+  // Quand on clique sur "Évaluer"
+  $(document).on('click', '.btnEvaluerDemande', function () {
+    currentMissionId = $(this).data('id');
+    $('#noteEvaluation').val(0);
+    $('#starRating .star').css('color', '#ccc'); // reset des étoiles
+  });
+
+  // Interaction avec les étoiles
+  $(document).on('click', '#starRating .star', function () {
+    const value = $(this).data('value');
+    $('#noteEvaluation').val(value);
+
+    $('#starRating .star').each(function () {
+      const starValue = $(this).data('value');
+      $(this).css('color', starValue <= value ? '#f0ad4e' : '#ccc');
+    });
+  });
+
+  // Envoi de l'évaluation
+  $('#submitEvaluation').on('click', function () {
+    const note = $('#noteEvaluation').val();
+
+    if (!note || note == 0) {
+      
+      toastr.warning("Veuillez sélectionner une note avant d'envoyer.");
+
+      return;
+    }
 
     $.ajax({
-      url: url,
-      method: 'GET',
-      success: function (data) {
-        let html = '';
-        if (data.length === 0) {
-          html = '<tr><td colspan="10" class="text-center text-danger">Aucun détail trouvé</td></tr>';
-        } else {
-          data.forEach(function (d) {
-            html += `
-              <tr>
-                <td>${d.date_mission}</td>
-                <td>${d.heure_depart}</td>
-                <td>${d.lieu_mission}</td>
-                <td>${d.ville_mission}</td>
-                <td>${d.km_depart}</td>
-                <td>${d.km_retour}</td>
-                <td>${d.duree_mission || '-'}</td>
-                <td>${d.tarif_unique} MAD</td>
-                <td>${d.conducteur || '-'}</td>
-                <td>${d.vehicule || '-'}</td>
-              </tr>`;
-          });
-        }
-
-        $('#detailsMissionBody').html(html);
-        $('#detailMissionModal').modal('show'); // <== ouvre la modal si non auto
+      url: `/mission/evaluer/${currentMissionId}`,
+      method: 'POST',
+      data: { note: note },
+      success: function (res) {
+        $('#evaluerMissionModal').modal('hide');
+        toastr.success("Évaluation enregistrée avec succès.");
+        location.reload();
       },
       error: function () {
-        $('#detailsMissionBody').html('<tr><td colspan="10" class="text-center text-danger">Erreur de chargement</td></tr>');
-        $('#detailMissionModal').modal('show');
+        alert("Erreur lors de l'enregistrement de l'évaluation.");
+        toastr.success("Évaluation enregistrée avec succès.");
       }
     });
   });

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use App\Entity\PEntite;
 
 use App\Repository\TDemandeCabRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,12 +22,12 @@ class TDemandeCab
 
 
     #[ORM\ManyToOne(inversedBy: 'tDemandeCabs')]
-    private ?Pentite $dossier_id = null;
+    private ?PEntite  $dossier_id = null;
 
     #[ORM\Column]
     private ?int $nb_personnes = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_demande = null;
 
     #[ORM\Column(length: 255)]
@@ -53,13 +54,13 @@ class TDemandeCab
     #[ORM\Column(length: 255)]
     private ?string $observation = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+     #[ORM\ManyToOne(inversedBy: 'tDemandeCabs')]
     private ?User $traitant_user_id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE,nullable:true)]
     private ?\DateTimeInterface $date_traitement = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'tDemandeCabs')]
     private ?User $validateur_user_id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE,nullable:true)]
@@ -78,6 +79,21 @@ class TDemandeCab
 
        #[ORM\Column(length: 255,nullable: true)]
     private ?string $adressdepart = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $annuler_user_id = null;
+
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $date_annulation = null;
+
+     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $date_execution = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $executant_user_id = null;
 
     public function __construct()
     {
@@ -352,6 +368,54 @@ class TDemandeCab
     public function setAdressDepart(string $adressdepart): static
     {
         $this->adressdepart = $adressdepart;
+
+        return $this;
+    }
+
+    public function getAnnulerUserId(): ?User
+    {
+        return $this->annuler_user_id;
+    }
+
+    public function setAnnulerUserId(?User $annuler_user_id): static
+    {
+        $this->annuler_user_id = $annuler_user_id;
+
+        return $this;
+    }
+
+    public function getDateAnnulation(): ?\DateTimeInterface
+    {
+        return $this->date_annulation;
+    }
+
+    public function setDateAnnulation(\DateTimeInterface $date_annulation): static
+    {
+        $this->date_annulation = $date_annulation;
+
+        return $this;
+    }
+
+    public function getDateExecution(): ?\DateTimeInterface
+    {
+        return $this->date_execution;
+    }
+
+    public function setDateExecution(\DateTimeInterface $date_execution): static
+    {
+        $this->date_execution = $date_execution;
+
+        return $this;
+    }
+
+    public function getExecutantUserId(): ?User
+    {
+        return $this->executant_user_id;
+    }
+
+    public function setExecutantUserId(?User $executant_user_id): static
+    {
+        $this->executant_user_id = $executant_user_id;
 
         return $this;
     }
