@@ -1,10 +1,105 @@
 $(document).ready(function () {
- 
-  $('#demandeTable').DataTable({
-    lengthMenu: [[15, 25, 50, -1], [15, 25, 50, 'ALL']],
-    autoWidth: false,
-    destroy: true
-  });
+    let globalActions = [];
+
+    $('#demandeTable').DataTable({
+        processing: true,
+        serverSide: true,   
+        ajax: {
+            url: Routing.generate('app_fetch_demandes'),
+            type: 'GET',
+            dataSrc: function (json) {
+                // Store actions globally for dynamic rendering
+                window.globalActions = Array.isArray(json.actions) ? json.actions : Object.values(json.actions);
+                return json.data;
+            },
+        },
+        columns: [
+
+       
+            { data: 'id', name: 'd.id' },
+            {
+                data: 'dossier',
+                name: 'e.nomDossier',
+                render: function(data, type, row) {
+                    if (data) {
+                        if (data.length > 4) {
+                            return `<span data-bs-toggle="tooltip" title="${data}">${data.substring(0, 4)}...</span>`;
+                        } else {
+                            return data;
+                        }
+                    } else {
+                        return `<span class="text-danger">Aucun dossier</span>`;
+                    }
+                }
+            },
+            { data: 'date_demande', name: 'd.date_demande' },
+            { data: 'nom_benificiaire', name: 'd.nom_benificiaire' },
+            { data: 'contact', name: 'd.contact' },
+            { data: 'cin', name: 'd.cin' },
+            { data: 'nb_personnes', name: 'd.nb_personnes' },
+            { data: 'adressdepart', name: 'd.adressdepart' },
+            { data: 'tarif_total', name: 'd.tarif_total' },
+            { data: 'description', name: 'd.description' },
+            { data: 'observation', name: 'd.observation' },
+            {
+                data: 'statut',
+                name: 's.libelle',
+                render: function(data, type, row) {
+                    return `<span style="color: #7593ae; text-align: center; font-size: 10px; display: block;">${data}</span>`;
+                }
+            },
+
+        
+          
+         { data: null, name: 'actions', orderable: false, searchable: false, render: function (data, type, full) {
+            // console.log('Full row data:', full);
+    // console.log('Global actions:', window.globalActions);
+    var actionsHtml = `<div class="dropdown">
+        <i class="menuActions fa-solid fa-ellipsis-vertical" id="${full.id}"></i>
+        <div class="dropdown-menu dropdown-content divMenu" id="divMenu${full.id}">`;
+
+    if (Array.isArray(window.globalActions)) {
+      window.globalActions.forEach(function (action) {
+        //  console.log('Checking action:', action.nom, 'for statutId:', full.statutId);
+   
+        let statutId = full.statutId; 
+
+        let shouldRender = false;
+
+        switch (action.nom) {
+          case 'DETAILLE':
+            shouldRender = true;
+            break;
+          case 'TRAITER':
+            shouldRender = (statutId === 1);    
+            break;
+          case 'VALIDER':
+          case 'ANNULER':
+            shouldRender = (statutId === 2);
+            break;
+          case 'EXCUTER':
+            shouldRender = (statutId === 7);
+            break;
+        }
+// console.log(`Action ${action.nom} shouldRender:`, shouldRender);
+        if (shouldRender) {
+          actionsHtml += `
+            <button data-id="${full.id}" class="${action.className} dropdown-item d-flex align-items-end">
+              <i class="${action.icon} menuIcon"></i> ${action.nom}
+            </button>`;
+        }
+      });
+      
+    }
+
+    actionsHtml += '</div></div>';
+    return actionsHtml;
+  }
+}
+
+        ],
+        language: datatablesFrench
+    });
 
    
   const isBootstrap5 = typeof bootstrap !== 'undefined' && typeof bootstrap.Tooltip !== 'undefined';
@@ -14,9 +109,17 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
   }
 
+$(document).on('click', '.buttonDetailleDemande', function() {
+    const demandeId = $(this).data('id');
+    if (demandeId) {
+        const modalId = '#detailDemandeModal' + demandeId;
+        $(modalId).modal('show');
+    }
+});
+
   let detailIndex = 0;
 
-  // Réinitialiser champs formulaire après ajout un détail
+  
   function resetDetailFields() {
     $('#zone-detail select, #zone-detail input').each(function () {
       const el = $(this);
@@ -198,6 +301,7 @@ $(document).ready(function () {
       url: '/demande/ajax/get/' + demandeId,
       method: 'GET',
       success: function (data) {
+        console.log('Détails reçus:', data.details);
         // console.log('Réponse AJAX /demande/ajax/get/:', data);
         // Remplir infos générales
         $('#traiter-id').val(data.id);
@@ -227,6 +331,12 @@ $(document).ready(function () {
                     <td class="nb_jours">${d.nb_jours}</td>
                     <td class="tarif">${d.tarif}</td>
                     <td class="kilometrage">${d.kilometrage || 0}</td>
+                    <td class="jawaz">${d.jawaz  || 0}</td>
+                    <td class="carburant">${d.carburant || 0}</td>
+                   
+                   
+
+            
                       <td>
                       <div class="dropdown">
                         <button class="btn btn-sm" type="button" id="dropdownMenuButton${d.id}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 30px; height: 30px; padding: 0;">
@@ -364,10 +474,10 @@ $(document).on('click', '.btnModifierDetail', function () {
             success: function (response) {
                       if (response.isKilometrage == 1 || response.isKilometrage === '1') {
                 $('#edit-iskilometrage').val(1);
-                $('#kilometrageGroup').show(); // ✅ Afficher
+                $('#kilometrageGroup').show(); 
               } else {
                 $('#edit-iskilometrage').val(0);
-                $('#kilometrageGroup').hide(); // ✅ Masquer
+                $('#kilometrageGroup').hide(); 
               }
             },
             error: function (xhr, status, error) {
@@ -397,6 +507,8 @@ $(document).on('click', '.btnModifierDetail', function () {
   const conducteurText = $('#edit-conducteur option:selected').text();
   const kilometrage = parseInt($('#edit-kilometrage').val()) || 0;
   const nbPersonnes = parseInt($('#traiter-nbPersonnes').val()) || 1;
+  const carburant = parseFloat($('input[name="details[0][carburant]"]').val()) || 0;
+ const jawaz = parseFloat($('input[name="details[0][jawaz]"]').val()) || 0;
   // Optionnel : vérifie que prestationId est bien défini
   if (!prestationId) {
     toastr.error('Prestation non sélectionnée correctement.');
@@ -406,13 +518,15 @@ $(document).on('click', '.btnModifierDetail', function () {
 
 
 
- const dataToSend = {
+ const dataToSend = {    
     prestationId: prestationId,
     quantite: quantite,
     nbJours: nbJours,
     date: date,
     kilometrage: kilometrage,
-    nbPersonnes: nbPersonnes
+    nbPersonnes: nbPersonnes,
+    carburant: carburant,
+    jawaz: jawaz
   };
   $.ajax({
     url: '/demande/ajax/tarif',
@@ -429,6 +543,8 @@ $(document).on('click', '.btnModifierDetail', function () {
       $row.find('.nb_jours').text(nbJours);
       $row.find('.tarif').text(parseFloat(tarif).toFixed(2));
       $row.find('.kilometrage').text(kilometrage); 
+      $row.find('.jawaz').text(jawaz.toFixed(2));
+      $row.find('.carburant').text(carburant.toFixed(2));
 
       $modal.modal('hide');
     },
@@ -437,16 +553,17 @@ $(document).on('click', '.btnModifierDetail', function () {
     }
   });
 });
-
+ 
 
 
 $('#btn-traiter-enregistrer').on('click', function () {
+  const dateDemande = $('#traiter-date').val();
   const id = $('#traiter-id').val();
   const details = [];
 
   $('#traiter-details-table tbody tr').each(function () {
     const row = $(this);
-    const detailId = row.find('.btnModifierDetail').data('id'); // ou row.find('td:first').text().trim()
+    const detailId = row.find('.btnModifierDetail').data('id');
 
     details.push({
       id: detailId,
@@ -458,17 +575,23 @@ $('#btn-traiter-enregistrer').on('click', function () {
       quantite: row.find('td.quantite').text().trim(),
       nb_jours: row.find('td.nb_jours').text().trim(),
       tarif: row.find('td.tarif').text().trim(),
-      kilometrage: row.find('td.kilometrage').text().trim()
+      kilometrage: row.find('td.kilometrage').text().trim(),
+      carburant: parseFloat(row.find('td.carburant').text()),
+     jawaz: parseFloat(row.find('td.jawaz').text())
     });
   });
-
+  const dataToSend = {
+    id: id,
+    dateDemande: dateDemande,
+    details: details
+  };
 
 
   $.ajax({
     url: '/demande/traiter/enregistrer',
     method: 'POST',
     contentType: 'application/json',
-    data: JSON.stringify({ id: id, details: details }),
+    data: JSON.stringify(dataToSend),
     success: function (res) {
       toastr.success(res.message);
       location.reload();
@@ -479,7 +602,7 @@ $('#btn-traiter-enregistrer').on('click', function () {
   });
 });
 
- $('.btnValiderDemande').on('click', function () {
+ $('#demandeTable').on('click', '.btnValiderDemande', function () {
       const demandeId = this.dataset.id;
 
       fetch('/demande/changer-statutValider/' + demandeId, {
@@ -501,9 +624,9 @@ $('#btn-traiter-enregistrer').on('click', function () {
       .catch(error => {
           toastr.error('La demande n\'a pas été validée');
       });
-  });
+  });   
 
-    $('.btnAnnulerDemande').on('click', function () {
+    $('#demandeTable').on('click', '.btnAnnulerDemande', function () {
       const demandeId = this.dataset.id;
 
       fetch('/demande/changer-statutAnnuler/' + demandeId, {
@@ -528,7 +651,7 @@ $('#btn-traiter-enregistrer').on('click', function () {
       });
   });
 
-
+    
  $(document).on('click', '.btnExcuterDemande', function (e) {
     e.preventDefault(); 
     const demandeId = $(this).data('id');
@@ -537,7 +660,7 @@ $('#btn-traiter-enregistrer').on('click', function () {
         title: 'Exécuter la demande ?',
         text: "Cette action exécutera définitivement la demande.",
         
-        showCancelButton: true,
+        showCancelButton: true,      
         confirmButtonColor: '#7593ae',
         cancelButtonColor: '#b6cb9e',
         confirmButtonText: 'Oui, exécuter',
@@ -548,7 +671,9 @@ $('#btn-traiter-enregistrer').on('click', function () {
                 url: '/demande/executerDemande/' + demandeId,
                 method: 'POST',
                 success: function (response) {
+
                     toastr.success('La demande a été exécutée avec succès. Voir la mission.', 'Succès');
+                    setTimeout(() => location.reload(), 1000);
                   
                 },
                 error: function () {
@@ -562,4 +687,4 @@ $('#btn-traiter-enregistrer').on('click', function () {
 
  
 
-});
+});   

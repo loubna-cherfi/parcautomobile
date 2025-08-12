@@ -1,27 +1,59 @@
 $(document).ready(function () {
-    // Initialiser Select2
-    $("select").select2();
+    let globalActions = [];
 
-    // Initialiser DataTable
-    initDataTable();
+    $('#vehiculeTable').DataTable({
+        processing: true,
+        serverSide: true,   
+        ajax: {
+            url: Routing.generate('app_fetch_vehicules'),
+            type: 'GET',
+            dataSrc: function (json) {
+                // Store actions globally for dynamic rendering
+                window.globalActions = Array.isArray(json.actions) ? json.actions : Object.values(json.actions);
+                return json.data;
+            },
+        },
+        columns: [
+            { data: 'id', name: 'v.id' },
+            { data: 'matricule', name: 'v.matricule' },
+            { data: 'model', name: 'v.model' },
+            { data: 'carburant', name: 'v.carburant' },
+            { data: 'transmission', name: 'v.transmission' },
+            { data: 'kilometrage', name: 'v.kilometrage' },
+            { data: 'capacite', name: 'v.capacite' },
+            {
+                data: 'active',
+                name: 'v.active',
+                render: function (data) {
+                    return data
+                        ? '<i class="fa-regular fa-circle-check actifIcon"></i>'
+                        : '<i class="fa-regular fa-circle-xmark inactifIcon"></i>';
+                }
+            },
+            { name: 'actions', date: null, orderable: false, searchable: false, render: function (data,type, full) {
+                var actionsHtml = `<div class="dropdown">
+                            <i class="menuActions fa-solid fa-ellipsis-vertical" id="${full.id}">
+                            </i>
+                            <div class="dropdown-menu dropdown-content divMenu" id="divMenu${full.id}">`;
+                            // console.log(window.globalActions);
+                            window.globalActions.forEach(function (action) {
+                                actionsHtml += `
+                                    <button data-id="${full.id}" class="${action.className} dropdown-item d-flex align-items-end"><i class="${action.icon} menuIcon"></i> ${action.nom}</button>`;
+                            });
+                    actionsHtml += '</div>';
+                    return actionsHtml;
+            } },
+        ],
+        language: datatablesFrench
+    });
 
-    function initDataTable() {
-        $('#vehiculeTable').DataTable({
-            lengthMenu: [
-                [15, 25, 50, -1],
-                [15, 25, 50, 'Tous']
-            ],
-            autoWidth: false,
-            destroy: true
-        });
-    }
 
     // Debug : bouton cliqué  
     $(document).on('click', 'button', function () {
         console.log("loubna:", $(this).attr("data-bs-target"));
     });
 
-    // 👉 Charger les infos d’un véhicule à modifier
+    // Charger les infos d’un véhicule à modifier
     $(document).on('click', '.btnUpdateVehicule', function () {
         let vehiculeId = $(this).data('id');
 
@@ -53,7 +85,7 @@ $(document).ready(function () {
         });
     });
 
-    // ✅ Enregistrer les modifications d’un véhicule
+    // Enregistrer les modifications d’un véhicule
     $(document).on('click', '.saveUpdateVehicule', function (e) {
         e.preventDefault();
 
@@ -92,7 +124,7 @@ $(document).ready(function () {
         });
     });
 
-    // ➕ Soumission AJAX pour ajouter un véhicule
+    //  Soumission AJAX pour ajouter un véhicule
     $(document).on('click', '.saveAddVehicule', function (e) {
         e.preventDefault();
 
@@ -125,8 +157,10 @@ $(document).ready(function () {
 
                 $('#addVehicule').modal('hide');
                 toastr.success("Véhicule ajouté avec succès !");
-                $('#listVehicules').html(response); // rafraîchir la liste
-                initDataTable();
+              setTimeout(function () {
+        location.reload();
+    }, 1500);
+                
             },
             error: function (xhr) {
                 toastr.error("Une erreur est survenue lors de l'ajout.");
@@ -156,3 +190,7 @@ $(document).on('click', '.btnToggleStatusVehicule', function () {
 });
 
 });
+
+
+
+

@@ -1,23 +1,23 @@
 <?php
 namespace App\Service;
-
+    
 use App\Entity\PPrestation;
-
+      
 class TarifCalculator
 {
     /**
      * Calcule le tarif total d’une prestation selon la date, la quantité et le nombre de jours.
      */
-    public function calculerTarif(PPrestation $prestation, \DateTime $date, int $quantite , int $nbJours ,int  $kilometrage,int $nbPersonnes): float
+    public function calculerTarif(PPrestation $prestation, \DateTime $date, int $quantite , int $nbJours ,int  $kilometrage,int $nbPersonnes, float $carburant,float $jawaz ): float
     {
         $tarifBase = $prestation->getTarifJour(); 
         if (!$tarifBase) {
-            return 0;
+            return 0;   
         }
 
         // Étape 1 : frais de gestion (2%)
         $fraisGestion = $tarifBase * 0.02;
-        $tarifJour = $tarifBase + $fraisGestion;
+        $tarifJour = $tarifBase + $fraisGestion;  
 
         // Étape 2 : déterminer le jour et l'heure
         $jour = (int) $date->format('w'); // 0 (dimanche) à 6 (samedi)
@@ -40,16 +40,23 @@ class TarifCalculator
         $tarifUnitaire *= $nbPersonnes;
     }
         }
+    
 
 
 
         if ($prestation->isIsKilometrage()) {
         // Tarif total avec kilométrage  
-        return round($tarifUnitaire * $quantite * $nbJours * $kilometrage, 2);
+         $tarifTotal = $tarifUnitaire * $quantite * $nbJours * $kilometrage;
     } else {
         
         // Tarif total normal
-        return round($tarifUnitaire * $quantite * $nbJours, 2);
+        $tarifTotal = $tarifUnitaire * $quantite * $nbJours;
     }
+    // Étape 5 : ajouter carburant et jawaz avec frais de gestion (2%)
+    $carburantAvecFrais = $carburant + ($carburant * 0.02);
+    $jawazAvecFrais = $jawaz + ($jawaz * 0.02);
+    $tarifTotal += $carburantAvecFrais + $jawazAvecFrais;
+
+        return round($tarifTotal, 2);
 }
 }

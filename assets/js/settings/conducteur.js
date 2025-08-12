@@ -1,20 +1,51 @@
 $(document).ready(function () {
-    // Initialize Select2
-    $("select").select2();
+let globalActions = [];
 
-    // Initialize DataTable
-    initDataTable();
-   
-    function initDataTable() {
-        $('#conducteurTable').DataTable({
-            lengthMenu: [
-                [15, 25, 50, -1],
-                [15, 25, 50, 'ALL']
-            ],
-            autoWidth: false,
-            destroy: true // important pour reinitialiser après refresh
-        });
-    }
+$('#conducteurTable').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: Routing.generate('app_fetch_conducteurs'),
+        type: 'GET',
+        dataSrc: function (json) {
+                // Store actions globally for dynamic rendering
+                window.globalActions = Array.isArray(json.actions) ? json.actions : Object.values(json.actions);
+                return json.data;
+            },
+    },
+    columns: [
+     
+        { data: 'id' },  
+        { data: 'nom' },
+        { data: 'prenom' },
+        { data: 'cin' },
+        { data: 'permis_type' },
+        { data: 'telephone' },
+        {
+            data: 'active',
+            name: 'c.active',
+            render: function (data) {
+                return data ? '<i class="fa-regular fa-circle-check actifIcon"></i>' :
+                              '<i class="fa-regular fa-circle-xmark inactifIcon"></i>';
+            }
+        },
+        { name: 'actions', date: null, orderable: false, searchable: false, render: function (data,type, full) {
+                var actionsHtml = `<div class="dropdown">
+                            <i class="menuActions fa-solid fa-ellipsis-vertical" id="${full.id}">
+                            </i>
+                            <div class="dropdown-menu dropdown-content divMenu" id="divMenu${full.id}">`;
+                            // console.log(window.globalActions);
+                            window.globalActions.forEach(function (action) {
+                                actionsHtml += `
+                                    <button data-id="${full.id}" class="${action.className} dropdown-item d-flex align-items-end"><i class="${action.icon} menuIcon"></i> ${action.nom}</button>`;
+                            });
+                    actionsHtml += '</div>';
+                    return actionsHtml;
+            } },
+        ],
+        language: datatablesFrench
+    });
+
 
     // Debug : affiche le data-bs-target
     $(document).on('click', 'button', function () {

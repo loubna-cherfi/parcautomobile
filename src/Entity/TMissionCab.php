@@ -34,7 +34,7 @@ class TMissionCab
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_execution = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+     #[ORM\ManyToOne(inversedBy: 'tMissionCabs')]
     private ?User $evaluateur_user_id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE,nullable:true)]

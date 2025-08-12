@@ -29,147 +29,22 @@
               <th>#</th>
               <th>Demande</th>
               <th>Dossier</th>
-              <th>observation</th>
-              <th>Binificiaire</th>
+              <th>Observation </th>
+              <th>Bénéficiaire</th>
               <th>CIN</th>
               <th>Contact</th>
               <th>Date mission</th>
               <th>N Personnes</th>
-              <th>Date Évaluation</th>
-              <th>Note Évaluation</th>
+              <th>Adresse Depart</th>
               <th>Tarif Total</th>
+               <th>Date Évaluation</th>
+              <th>Note Évaluation</th>
               <th>Statut</th>
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="listMission">
-            {% for index, mission in missions %}
-              <tr>
-                <td>{{ index + 1 }}</td>
-                  
-    <td>
-  {% if mission.demandeId is not null %}
-    {{ mission.demandeId.id }}
-  {% else %}
-    <span class="text-danger">Aucune demande</span>
-  {% endif %}
-</td>
-
-<td>
-  {% if mission.dossier is not null %}
-    {% set nomDossier = mission.dossier.nomDossier %}
-    {% if nomDossier|length > 4 %}
-      <span data-bs-toggle="tooltip" title="{{ nomDossier }}">
-        {{ nomDossier[:4] }}...
-      </span>
-    {% else %}
-      {{ nomDossier }}
-    {% endif %}
-  {% else %}
-    <span class="text-danger">Aucun dossier</span>
-  {% endif %}
-</td>
-
-      <td>{{ mission.observation }}</td>
-      <td>{{ mission.nomBenificiaire }}</td>
-      <td>{{ mission.cin }}</td>
-      <td>{{ mission.contact }}</td>
-      <td>{{ mission.dateMission ? mission.dateMission|date('Y-m-d') : '' }}</td>
-      <td>{{ mission.nbPersonne }}</td>
-      <td>{{ mission.dateEvaluation ? mission.dateEvaluation|date('Y-m-d') : '-' }}</td>
-      <td>
-        {% if mission.evaluationNote %}
-          {% for i in 1..5 %}
-            {% if i <= mission.evaluationNote %}
-              <i class="fa fa-star text-warning"></i>
-            {% else %}
-              <i class="fa fa-star text-muted"></i>
-            {% endif %}
-          {% endfor %}
-        {% else %}
-          -
-        {% endif %}
-      </td>
-      <td>{{ mission.tarifTotal }}</td>
-      
-                <td>
-                  {% if mission.active %}
-                    <i class="fa-regular fa-circle-check "></i>
-                  {% else %}
-                    <i class="fa-regular fa-circle-xmark "></i>
-                  {% endif %}
-                </td>
-            <td>
-  <div class="dropdown">
-    <button class="btn  btn-sm" type="button" id="dropdownMenuButton{{ mission.id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i class="fa-solid fa-ellipsis-vertical"></i>
-    </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ mission.id }}">
-    
-    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#detailMissionModal{{ mission.id }}">
-    <i class="fa fa-eye"></i> Détail
-  </button>
-  <div class="modal fade" id="detailMissionModal{{ mission.id }}" tabindex="-1" aria-labelledby="detailMissionModalLabel{{ mission.id }}" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="detailMissionModalLabel{{ mission.id }}">Détails de la mission {{ mission.id }}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-        </div>
-        <div class="modal-body">
-          <table class="table table-bordered table-sm">
-            <thead>
-              <tr>
-                <th>Tarif Unique</th>
-                <th>Conducteur</th>
-                <th>Véhicule</th>
-                <th>Prestation</th>
-                <th>Nb Personnes</th>
-                <th>Quantité</th>
-                <th>Kilométrage</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for detail in detailsParMission[mission.id]|default([]) %}
-                <tr>
-                  <td>{{ detail.tarifUnique }}</td>
-                  <td>{{ detail.conducteurId ? detail.conducteurId.nom : '—' }}</td>
-                  <td>{{ detail.vehiculeId ? detail.vehiculeId.matricule : '—' }}</td>
-                  <td>{{ detail.prestation ? detail.prestation.nomPrestation : '—' }}</td>
-                  <td>{{ detail.nbPersonne }}</td>
-                  <td>{{ detail.quantite }}</td>
-                  <td>{{ detail.kilometrage }}</td>
-                </tr>
-              {% else %}
-                <tr>
-                  <td colspan="7" class="text-center">Aucun détail disponible</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  {% if mission.statutId.id == 3 %}
-     <button
-  class="dropdown-item btnEvaluerDemande"
-  data-id="{{ mission.id }}"
-  data-toggle="modal"
-  data-target="#evaluerMissionModal"
->
-  <i class="fa-regular fa-star"></i> Évaluer
-</button>
-{% endif %}
-    </div>
-  </div>
-</td>
-
-              </tr>
-            {% endfor %}
+          <tbody>
+           
           </tbody>
         </table>
       </div>
@@ -178,12 +53,14 @@
 </div>
 
 <!-- MODAL ÉVALUATION MISSION (une seule, hors boucle) -->
+
 <div class="modal fade" id="evaluerMissionModal" tabindex="-1" role="dialog" aria-labelledby="evaluerMissionModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm modal-dialog-centered" role="document" style="width: 500px;">
     <div class="modal-content p-3">
       <div class="modal-header">
         <h6 class="modal-title text-primary" id="evaluerMissionModalLabel">Évaluer la mission</h6>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="">
+            <span aria-hidden="true">&times;</span>
       </div>
       <div class="modal-body text-center">
         <div id="starRating" class="mb-3">
@@ -199,4 +76,64 @@
 </div>
 
 
-{% endblock %}
+<!-- MODALS DÉTAILS MISSION (une par mission) -->
+{% for mission in missions %}
+  <div class="modal right fade" id="detailMissionModal{{ mission.id }}" tabindex="-1" aria-labelledby="detailMissionModalLabel{{ mission.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-primary" id="detailMissionModalLabel{{ mission.id }}" >Détails de la mission {{ mission.id }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-sm">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Prestation</th>
+                {# <th>Type de prestation</th>
+                <th>Adresse d'arrivée</th> #}
+                <th>Conducteur</th>
+                <th>Véhicule</th>
+                <th>Nb Personnes</th>
+                <th>Quantité</th>
+                <th>Kilométrage</th>
+                <th>Jawaz</th>
+                <th>Carburant</th>
+                <th>Tarif Unique</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for detail in detailsParMission[mission.id]|default([]) %}
+                <tr>
+                  <td>{{ detail.id}}</td>
+                  <td>{{ detail.prestation ? detail.prestation.nomPrestation : '—' }}</td>
+                  {# <td></td>
+                  <td></td> #}
+                  <td>{{ detail.conducteurId ? detail.conducteurId.nom : '—' }}</td>
+                  <td>{{ detail.vehiculeId ? detail.vehiculeId.matricule : '—' }}</td>
+                  <td>{{ detail.nbPersonne }}</td>
+                  <td>{{ detail.quantite }}</td>
+                  <td>{{ detail.kilometrage }}</td>
+                  <td>{{ detail.jawaz }}</td>
+                  <td>{{ detail.carburant }}</td>
+                  <td>{{ detail.tarifUnique }}</td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="7" class="text-center">Aucun détail disponible</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+{% endblock %} 

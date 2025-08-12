@@ -40,6 +40,12 @@ class TMissionDet
 
     #[ORM\Column]
     private ?int $kilometrage = null;
+
+    #[ORM\Column ]
+    private ?float $jawaz = null;
+
+    #[ORM\Column]
+    private ?float $carburant = null;
    
 
     public function getId(): ?int
@@ -138,6 +144,30 @@ class TMissionDet
     public function setKilometrage(int $kilometrage): static
     {
         $this->kilometrage = $kilometrage;
+
+        return $this;
+    }
+
+    public function getJawaz(): ?float
+    {
+        return $this->jawaz;
+    }
+
+    public function setJawaz(float $jawaz): static
+    {
+        $this->jawaz = $jawaz;
+
+        return $this;
+    }
+
+    public function getCarburant(): ?float
+    {
+        return $this->carburant;
+    }
+
+    public function setCarburant(float $carburant): static
+    {
+        $this->carburant = $carburant;
 
         return $this;
     }

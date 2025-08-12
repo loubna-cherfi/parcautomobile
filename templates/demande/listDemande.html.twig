@@ -6,7 +6,6 @@
     {{ parent() }}
     {{ encore_entry_script_tags('settings_demande') }}
 {% endblock %}
-
 {% block body %}
 <div class="main">
 <div class="container">
@@ -43,81 +42,8 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="listDemandes">
-                    {% for index, demande in demandes %}
-                        <tr id="{{ demande.id }}">
-                                <td>{{ index + 1 }}</td>
-                                <td>
-                                {% if demande.dossierId is not null %}
-                                  {% set nomDossier = demande.dossierId.nomDossier %}
-                                  {% if nomDossier|length > 4 %}
-                                    <span data-bs-toggle="tooltip" title="{{ nomDossier }}">
-                                      {{ nomDossier[:4] }}...
-                                    </span>
-                                  {% else %}
-                                    {{ nomDossier }}
-                                  {% endif %}
-                                {% else %}
-                                  <span class="text-danger">Aucun dossier</span>
-                                {% endif %}
-                              </td>
-                                <td>{{ demande.dateDemande ? demande.dateDemande|date('d/m/Y') : '' }}</td>
-                                <td>{{ demande.nomBenificiaire }}</td>
-                                <td>{{ demande.contact }}</td>
-                                <td>{{ demande.cin }}</td>
-                                <td>{{ demande.nbPersonnes }}</td>
-                                <td>{{ demande.adressdepart }}</td>
-                                <td>{{ demande.tarifTotal }}</td>
-                                <td>{{ demande.description }}</td>
-                                <td>{{ demande.observation }}</td>
-                                {# <td>{{ demande.dateValidation ? demande.dateValidation|date('d/m/Y') : '' }}</td>  #}
-                                {# <td>{{ demande.statutId ? demande.statutId.libelle ?? 'N/A' : 'N/A' }}</td> #}
-                                <td>
-                                {% if demande.active %}
-                                <i class="fa-regular fa-circle-check actifIcon"></i>
-                                {% else %}
-                                <i class="fa-regular fa-circle-xmark inactifIcon"></i>
-                                {% endif %}
-                                </td>         
-                            <td>    
-  <div class="dropdown">
-    <button class="btn " type="button" id="dropdownMenuButton{{ demande.id }}" data-toggle="dropdown">
-   
-      <i class="fa-solid fa-ellipsis-vertical"></i>
-    </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ demande.id }}">
-     {# <button class="dropdown-item btnDetails" data-id="{{ demande.id }}"  data-bs-toggle="offcanvas" data-bs-target="#detailDemandeOffcanvas">
-        <i class="fa fa-eye"></i> Détail
-      </button> #}
-      {% if demande.statutId.id == 1 %}
-    <button class="dropdown-item btnTraiterDemande" data-id="{{ demande.id }}" data-toggle="modal" data-target="#traiterDemande">
-  <i class="fa-solid fa-pen-to-square"></i> Traiter
-</button>
-   {% endif %}
-   {% if demande.statutId.id == 2 %}
-   <button class="dropdown-item btnValiderDemande"  data-id="{{ demande.id }}" data-toggle="modal" data-target="">
-  <i class="fa fa-check"></i> Valider
-</button>
-
-   {% endif %}
-      {% if demande.statutId.id == 2 %}
-   <button class="dropdown-item btnAnnulerDemande" data-id="{{ demande.id }}" data-toggle="modal" data-target="">
-  <i class="fa-solid fa-xmark"></i> Annuler
-</button> 
-
-   {% endif %}
-   {% if demande.statutId.id == 7 %}
-       <button type="button" class="dropdown-item btnExcuterDemande" data-id="{{ demande.id }}" >
-  <i class="fa fa-check"></i> Excuter
-</button>
-{% endif %}
-    </div>
-  </div>
-</td>
-
-
-                        </tr>
-                    {% endfor %}
+                <tbody>
+                   
                 </tbody>
             </table>
         </div>
@@ -194,18 +120,22 @@
                 <div class="col-md-6 mb-2">
                 <label for="vehicule">Véhicule</label>
                   <select name="details[0][vehicule]" class="form-control form-control-sm">
-                    <option value="">Véhicule</option>
+                    {# <option value="">Véhicule</option> #}
                     {% for vehicule in vehicules %}
+                      {% if vehicule.active == 1 %}
                       <option value="{{ vehicule.id }}">{{ vehicule.matricule }}</option>
+                        {% endif %}
                     {% endfor %}
                   </select>
                 </div>
                 <div class="col-md-6 mb-2">
                 <label for="conducteur">Conducteur</label>
                   <select name="details[0][conducteur]" class="form-control form-control-sm">
-                    <option value="">Conducteur</option>
+                    {# <option value="">Conducteur</option> #}
                     {% for conducteur in conducteurs %}
+                      {% if conducteur.active == 1 %}
                       <option value="{{ conducteur.id }}">{{ conducteur.nom }}</option>
+                       {% endif %}
                     {% endfor %}
                   </select>
                 </div>
@@ -222,7 +152,7 @@
                   </select>
                 </div>
                 <div class="col-md-6 mb-2">
-                 <label for="add-zone">Zone</label>
+                 <label for="add-zone">Adresse d'arrivée</label>
                   <select name="details[0][zone]" class="form-control form-control-sm" id="add-zone">
                     
                     {% for zone in zones %}
@@ -267,7 +197,7 @@
                   <th>Véhicule</th>
                   <th>Conducteur</th>
                   <th>Type prestation</th>
-                  <th>Zone</th>
+                  <th>Adresse d'arrivée</th>
                   <th>Prestation</th>
                   <th>Quantité</th>
                   <th>Jours</th>
@@ -341,7 +271,7 @@
             </div>
             <div class="col-md-6 mb-2">
              <label for="traiter-date">Date de la demande</label>
-              <input type="datetime-local" name="dateDemande" id="traiter-date" class="form-control form-control-sm" readonly>
+              <input type="datetime-local" name="dateDemande" id="traiter-date" class="form-control form-control-sm">
             </div>
             <div class="col-md-6 mb-2">
             <label for="traiter-adresse">Adresse de départ</label>
@@ -359,12 +289,14 @@
                   <th>Véhicule</th>
                   <th>Conducteur</th>
                   <th>Type</th>
-                  <th>Zone</th>
+                  <th>Adresse d'arrivée</th>
                   <th>Prestation</th>
                   <th>Quantité</th>
                   <th>Jours</th>
                   <th>Tarif</th>
                   <th>Kilommetrage</th>
+                  <th>Jawaz</th>
+                  <th>Carburant</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -408,7 +340,9 @@
               <select class="form-control" id="edit-vehicule" name="vehicule">
                 <option value=""></option>
                 {% for vehicule in vehicules %}
+                {% if vehicule.active == 1 %}
                   <option value="{{ vehicule.id }}">{{ vehicule.matricule }}</option>
+                    {% endif %}
                 {% endfor %}
                </select>
 
@@ -419,7 +353,9 @@
              <select class="form-control" id="edit-conducteur" name="conducteur">
               <option value=""></option>
               {% for conducteur in conducteurs %}
+              {% if conducteur.active == 1 %}
                 <option value="{{ conducteur.id }}">{{ conducteur.nom }}</option>
+                  {% endif %}
               {% endfor %}
             </select>
             </div>
@@ -432,7 +368,7 @@
               <input type="text" class="form-control" id="edit-type" readonly>
             </div>
             <div class="form-group col-6">
-              <label for="edit-zone">Zone</label>
+              <label for="edit-zone">Adresse d'arrivée</label>
               <input type="text" class="form-control" id="edit-zone" readonly>
             </div>
           </div>
@@ -454,8 +390,20 @@
             </div>
           </div>
 
-          <!-- Jours et Kilométrage -->
-          <div class="form-row">
+         
+         
+
+            <div class="form-row">
+            <div class="form-group col-6">
+              <label for="edit-jawaz">Jawaz</label>
+             <input type="number" class="form-control" id="edit-jawaz" name="details[0][jawaz]">
+            </div>
+            <div class="form-group col-6">
+              <label for="edit-carburant">Carburant</label>
+              <input type="text" class="form-control" id="edit-carburant" name="details[0][carburant]">
+            </div>
+          </div>
+ <div class="form-row">
             <div class="form-group col-6">
               <label for="edit-jours">Nombre de jours</label>
               <input type="number" class="form-control" id="edit-jours" readonly>
@@ -465,25 +413,78 @@
               <label for="edit-kilometrage">Kilométrage</label>
               <input type="number" class="form-control" id="edit-kilometrage" name="kilometrage">
             </div>
-
-            {# <div id="kilometrageGroup" class="form-group col-6" style="display: none;">
-              <label for="edit-kilometrage">Kilométrage</label>
-              <input type="number" class="form-control" id="edit-kilometrage" name="kilometrage">
-            </div> #}
-
           </div>
         </div>
-
         <!-- Footer -->
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary" id="btn-enregistrer-detail">Enregistrer</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
         </div>
       </form>
-    </div>
+    </div>  
   </div>
 </div>
 
+<!-- MODALS DÉTAILS Demande  -->
+{% for demande in demandes %}
+  <div class="modal right fade" id="detailDemandeModal{{ demande.id }}" tabindex="-1" aria-labelledby="detailDemandeModalLabel{{ demande.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-primary" id="detailDemandeModalLabel{{ demande.id }}" >Détails de la demande {{ demande.id }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="">
+            <span aria-hidden="true">&times;</span>   
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-sm">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Prestation</th>
+                {# <th>Type de prestation</th>
+                <th>Adresse d'arrivée</th> #}
+                <th>Conducteur</th>
+                <th>Véhicule</th>         
+                <th>Nb Jours</th>
+                <th>Quantité</th>
+                <th>Kilométrage</th>
+                <th>Jawaz</th>
+                <th>Carburant</th>
+                <th>Tarif Unique</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for detail in detailsParDemande[demande.id]|default([]) %}
+                <tr>
+                  <td>{{ detail.id }}</td>
+                  <td>{{ detail.prestationId ? detail.prestationId.nomPrestation : '—' }}</td>
+                  {# <td>{{ detail.prestationId ? detail.prestationId.nomPrestation : '—' }}</td>
+                  <td>{{ detail.prestationId ? detail.prestationId.nomPrestation : '—' }}</td> #}
+                  <td>{{ detail.conducteurId ? detail.conducteurId.nom : '—' }}</td>
+                  <td>{{ detail.vehiculeId ? detail.vehiculeId.matricule : '—' }}</td>
+                  <td>{{ detail.nbjour }}</td>
+                  <td>{{ detail.quantite }}</td>
+                  <td>{{ detail.kilometrage }}</td>
+                  <td>{{ detail.jawaz }}</td>
+                  <td>{{ detail.carburant }}</td>
+                  <td>{{ detail.tarif }}</td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="7" class="text-center">Aucun détail disponible</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
 
 
 
